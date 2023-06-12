@@ -769,7 +769,7 @@
 </blockquote>
 <ol>
 <li>直接从浏览器扩展入手：<br> 下载并安装Chrome&#x2F;Edge&#x2F;Firefox浏览器扩展：WebRTC Leak Shield<div class="highlight-container" data-rel="Http"><figure class="iseeu highlight http"><table><tr><td class="code"><pre><span class="line">https://chrome.google.com/webstore/detail/webrtc-leak-shield/bppamachkoflopbagkdoflbgfjflfnfl  </span><br><span class="line"></span><br><span class="line">https://microsoftedge.microsoft.com/addons/detail/pblfgfehcokbglafpcldgjpmknildihk  </span><br><span class="line"></span><br><span class="line">https://addons.mozilla.org/en-US/firefox/addon/webrtc-leak-shield/</span><br></pre></td></tr></table></figure></div></li>
-<li>从浏览器本身配置入手：<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">chrome://flags/#enable-webrtc-hide-local-ips-with-mdns  opera://flags/#enable-webrtc-hide-local-ips-with-mdns  </span><br><span class="line">edge://flags/#enable-webrtc-hide-local-ips-with-mdns</span><br></pre></td></tr></table></figure></div>
+<li>从浏览器本身配置入手：<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">chrome://flags/#enable-webrtc-hide-local-ips-with-mdns  </span><br><span class="line">opera://flags/#enable-webrtc-hide-local-ips-with-mdns  </span><br><span class="line">edge://flags/#enable-webrtc-hide-local-ips-with-mdns</span><br></pre></td></tr></table></figure></div>
 但经过测试，还是扩展好用<br> Firefox配置项：<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">about:config  </span><br><span class="line">media.peerconnection.enabled</span><br></pre></td></tr></table></figure></div>
 FireFox不需要扩展，直接配置就比上面那些搞扩展的好使。</li>
 </ol>
@@ -784,9 +784,8 @@ FireFox不需要扩展，直接配置就比上面那些搞扩展的好使。</li
                      data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/anonymous/Pasted-image-20230608153324.75gq8evsrd80.png"
                       alt="Pasted-image-20230608153324" 
                 ><figcaption>Pasted-image-20230608153324</figcaption></figure>
-## 代理池
 
-<p>作为一个红队成员，在打点过程中，最讨厌的就是信息还在收集，扫描器还在运行时，突然就拿不到数据了，不用问，被封ip了。<br>但信息收集和找口子阶段少不了大批量的扫描流量的发送了，这就需要红队自身要有足够多的ip喂给蓝队去封禁。<br>介绍几个代理池项目：<br><a class="link"   href="https://github.com/jhao104/proxy_pool" >https://github.com/jhao104/proxy_pool <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><a class="link"   href="https://github.com/Anyyy111/ProxyPoolxSocks" >https://github.com/Anyyy111/ProxyPoolxSocks <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>代理池的原理和代理服务器一样，没啥好讲的，只不过用于爬虫的代理服务器会快速更换代理ip，直到ip池中的ip都被封禁。<br><figure class="image-caption"><img  
+<h2 id="代理池"><a href="#代理池" class="headerlink" title="代理池"></a>代理池</h2><p>作为一个红队成员，在打点过程中，最讨厌的就是信息还在收集，扫描器还在运行时，突然就拿不到数据了，不用问，被封ip了。<br>但信息收集和找口子阶段少不了大批量的扫描流量的发送了，这就需要红队自身要有足够多的ip喂给蓝队去封禁。<br>介绍几个代理池项目：<br><a class="link"   href="https://github.com/jhao104/proxy_pool" >https://github.com/jhao104/proxy_pool <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><a class="link"   href="https://github.com/Anyyy111/ProxyPoolxSocks" >https://github.com/Anyyy111/ProxyPoolxSocks <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>代理池的原理和代理服务器一样，没啥好讲的，只不过用于爬虫的代理服务器会快速更换代理ip，直到ip池中的ip都被封禁。<br><figure class="image-caption"><img  
                      lazyload
                      src="/images/loading.svg"
                      data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/anonymous/Pasted-image-20230608161458.46xcx17x4o80.png"
@@ -799,13 +798,13 @@ FireFox不需要扩展，直接配置就比上面那些搞扩展的好使。</li
 <p>总结这一块知识的时候，感觉这一块内容太丰富，甚至应该单独开一篇来写</p>
 </blockquote>
 <h4 id="什么是云函数"><a href="#什么是云函数" class="headerlink" title="什么是云函数"></a>什么是云函数</h4><pre><code>云函数提供了一种直接在云上运行，无状态的、短暂的、由事件触发的代码的能力。
-
+对比：
 随着云服务的发展，计算资源高度抽象化，腾讯云提供了从物理服务器到云函数和横跨各种抽象程度的计算资源供用户选择。
 黑石物理服务器：以物理机为扩展单位。用户完全拥有整台实体计算资源，安全性最好。
 云服务器：以云服务器为扩展单位，虚拟化硬件设备。用户和其他租户共享物理机资源，仍可自行配置 CVM 的各项指标，相对部署和迭代更加简单。
 容器服务：以服务为扩展单位，虚拟化操作系统。测试和生产环境完全一致，测试和部署非常轻松。
 云函数：以函数为扩展单位，虚拟化运行时环境（Runtime）。是现有计算资源的最小单位，具有完全自动、一键部署、高度可扩展等特点，是轻量级服务部署非常好的选择。
-                                            【引自腾讯云文档】
+【引自腾讯云文档】
 </code></pre>
 <figure class="image-caption"><img  
                      lazyload
@@ -813,11 +812,13 @@ FireFox不需要扩展，直接配置就比上面那些搞扩展的好使。</li
                      data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/anonymous/Pasted-image-20230612180542.1860haoz2q1s.png"
                       alt="Pasted-image-20230612180542" 
                 ><figcaption>Pasted-image-20230612180542</figcaption></figure>
-特性：
-1. 云函数不需要服务器，也就是说你不需要去买 VPS。
-2. 云函数只是云厂商用自己的服务器帮你运行你上传的代码片段， 执行某个单一的逻辑，可以简单理解为只帮你执行一个函数。
-3. 云函数无法长驻，调用的时候创建，执行完之后立即就销毁，所以无法直接保存状态。也正是这一点，让我们无法代理像 SSH 这种需要长连接的服务，只能代理 HTTP(s) 这种无状态的协议。
 
+<p><strong>特性：</strong></p>
+<ol>
+<li>云函数不需要服务器，也就是说你不需要去买 VPS。 <br></li>
+<li>云函数只是云厂商用自己的服务器帮你运行你上传的代码片段， 执行某个单一的逻辑，可以简单理解为只帮你执行一个函数。 <br></li>
+<li>云函数无法长驻，调用的时候创建，执行完之后立即就销毁，所以无法直接保存状态。也正是这一点，让我们无法代理像 SSH 这种需要长连接的服务，只能代理 HTTP(s) 这种无状态的协议。 <br></li>
+</ol>
 <p>利用云厂商提供的云函数（函数计算）功能，将客户端的HTTP请求进行转发，由于云函数多出口的特性，让我们也变相拥有了代理池。</p>
 <p>当前国内已知云平台，阿里云和腾讯云都可以使用云函数。</p>
 <h4 id="怎么使用云函数"><a href="#怎么使用云函数" class="headerlink" title="怎么使用云函数"></a>怎么使用云函数</h4><p>目标：将burp、CS、webshell等攻击流量全部通过云函数代理，以达到不可封禁和不可溯源的效果。</p>
@@ -850,13 +851,15 @@ FireFox不需要扩展，直接配置就比上面那些搞扩展的好使。</li
                       alt="Pasted-image-20230612193411" 
                 ><figcaption>Pasted-image-20230612193411</figcaption></figure><br>设置API触发<br>以上就是腾讯云的云函数实现socks代理的办法</p>
 <p>http这一块相比，就是多了个鉴权，去B站还能找到添加了ssl证书的https版本。</p>
-<p>可以看一下渣渣老师在2021年发布的腾讯云云函数代理办法<br><a class="link"   href="https://www.bilibili.com/video/BV1x64y1873g/?share_source=copy_web&vd_source=c5b1bc1a031a95bca5007f137fe846b8" >https://www.bilibili.com/video/BV1x64y1873g/?share_source=copy_web&amp;vd_source=c5b1bc1a031a95bca5007f137fe846b8 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<p>也可也看看大C老师做的基于阿里云云函数代理办法，这个是用go写的。<br><a class="link"   href="https://www.bilibili.com/video/BV1ML4y1M7Cu/?share_source=copy_web&vd_source=c5b1bc1a031a95bca5007f137fe846b8" >https://www.bilibili.com/video/BV1ML4y1M7Cu/?share_source=copy_web&amp;vd_source=c5b1bc1a031a95bca5007f137fe846b8 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<p>啥？不会写？行吧，有位大佬在Github上发布了一键部署项目 <a class="link"   href="https://github.com/shimmeris/SCFProxy/blob/main/README_zh.md" >https://github.com/shimmeris/SCFProxy/blob/main/README_zh.md <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>还看不懂就真的帮不了你了。</p>
-<h2 id="利用硬件隐身"><a href="#利用硬件隐身" class="headerlink" title="利用硬件隐身"></a>利用硬件隐身</h2><p>这一块就没什么难的，我一句话概括：用手机开热点</p>
+<p>可以看一下渣渣老师在2021年发布的腾讯云云函数代理办法:</p>
+<p><a class="link"   href="https://www.bilibili.com/video/BV1x64y1873g/?share_source=copy_web&vd_source=c5b1bc1a031a95bca5007f137fe846b8" >https://www.bilibili.com/video/BV1x64y1873g/?share_source=copy_web&amp;vd_source=c5b1bc1a031a95bca5007f137fe846b8 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>也可也看看大C老师做的基于阿里云云函数代理办法，这个是用go写的:</p>
+<p><a class="link"   href="https://www.bilibili.com/video/BV1ML4y1M7Cu/?share_source=copy_web&vd_source=c5b1bc1a031a95bca5007f137fe846b8" >https://www.bilibili.com/video/BV1ML4y1M7Cu/?share_source=copy_web&amp;vd_source=c5b1bc1a031a95bca5007f137fe846b8 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>啥？不会写？行吧，有位大佬在Github上发布了一键部署项目:<br> <a class="link"   href="https://github.com/shimmeris/SCFProxy/blob/main/README_zh.md" >https://github.com/shimmeris/SCFProxy/blob/main/README_zh.md <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>还看不懂就真的帮不了你了。</p>
+<h2 id="利用硬件隐身"><a href="#利用硬件隐身" class="headerlink" title="利用硬件隐身"></a>利用硬件隐身</h2><p>这一块就没什么难的，我一句话概括：<strong>用手机开热点</strong></p>
 <p>我就知道你会骂我</p>
 <ul>
-<li><p>知道手机开热点为什么好使吗？</p>
+<li><p>手机开热点为什么好使吗？</p>
 <p>  前面WebRTC中讲到，如果你使用宽带上网，服务器会获取你的公网ip，而公网ip都是由运营商提供的，除非你很有钱，买了一个独享的ip专线，否则，你就是和整个小区，甚至整个街区共用同一个ip。因此，ip定位不会太详细。</p>
 </li>
 </ul>
@@ -866,8 +869,7 @@ FireFox不需要扩展，直接配置就比上面那些搞扩展的好使。</li
 <p>  已知手机上网的办法并不是宽带的那一套，而是WCDMA的那一套东西，使用的ip是由基站分配的，也不会太详细。</p>
 </li>
 </ul>
-<p>但即使不详细，这个定位依然很好使啊，至少它定位到了搞事情所在的城市甚至小区啊。</p>
-<p>这里就用到了一个不起眼的小玩具：<br><figure class="image-caption"><img  
+<p>但即使不详细，这个定位依然很好使啊，至少它定位到了搞事情所在的城市甚至小区啊。<br><br><br>这里就用到了一个不起眼的小玩具：<br><figure class="image-caption"><img  
                      lazyload
                      src="/images/loading.svg"
                      data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/anonymous/Pasted-image-20230612201324.5gs0c61u0280.webp"
@@ -878,8 +880,12 @@ FireFox不需要扩展，直接配置就比上面那些搞扩展的好使。</li
 <p>但可以实现匿名的点在 <strong>流量卡</strong> 上，笔者曾经记录使用流量卡上网时的ip<br>每次ip定位都在不同的城市，从来就没有过ip定位在所在地附近的情况。<br>于是，渗透机流量经过随身WIFI转发，再经由14层协议到达目标，目标机上记录的ip就是和你丝毫没关系的运营商基站ip。</p>
 <p>但这就完事了吗？这也太没劲了</p>
 <p>如图，笔者把随身WIFI拆了，并深入进去逆了一下。</p>
-<p>硬件：CPU4核｜ROM512MB｜RAM4GB<br>架构：ARM v7 Processor rev0（v7l）<br>自带系统：Android4.4</p>
-<p>熟不熟悉？就是手机！<br>红米2的配置！<br>虽然性能不大，但是刷进去一个arm的linux系统不是刚刚好嘛？<br>于是我刷了个OpenWrt</p>
+<p>硬件：CPU4核｜ROM512MB｜RAM4GB</p>
+<p>架构：ARM v7 Processor rev0（v7l）</p>
+<p>自带系统：Android4.4</p>
+<p>熟不熟悉？就是手机！</p>
+<p>红米2的配置！</p>
+<p>虽然性能不大，但是刷进去一个arm的linux系统不是刚刚好嘛？<br>于是我刷了个OpenWrt</p>
 <p>然后连进去看看<br><figure class="image-caption"><img  
                      lazyload
                      src="/images/loading.svg"
