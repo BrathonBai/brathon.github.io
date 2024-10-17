@@ -339,196 +339,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>关于Win+Linux双系统 我实现了一个解决方案</title>
-    <url>/2023/04/23/%E5%85%B3%E4%BA%8EWin-Linux%E5%8F%8C%E7%B3%BB%E7%BB%9F-%E6%88%91%E5%AE%9E%E7%8E%B0%E4%BA%86%E4%B8%80%E4%B8%AA%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</url>
-    <content><![CDATA[<blockquote>
-<p>前情提要：<br><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/image 1.dc4kno2gir4.webp"
-                      alt="image 1" 
-                ><figcaption>image 1</figcaption></figure></p>
-</blockquote>
-<blockquote>
-<p>之前完成了便携的kali系统，即，将kali安装在移动硬盘中，想要使用的话，只需要插上后重启即可。<br>某一天发现启动出问题了，故该文章重新编写，把截图全都补上。</p>
-</blockquote>
-<p>那么，正文开始</p>
-<h1 id="买"><a href="#买" class="headerlink" title="买"></a>买</h1><p>这里我们期待的一个环境，就是将linux系统安装在移动硬盘里，做到即插即用。<br>先买一个差不多大的硬盘，这里建议买带硬盘盒的，窄长一小条，方便携带。</p>
-<figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/image-1668069178564.hjd8m970em0.webp"
-                      alt="image-1668069178564" 
-                ><figcaption>image-1668069178564</figcaption></figure>
-
-<p>之后选一个差不多的U盘作为安装启动盘，这里用不着买太大的，差不多就行。</p>
-<h1 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h1><p>我们需要一个能将镜像文件存放的安装介质，即把iso放进u盘的工具</p>
-<p>Rufus:<a class="link"   href="https://github.com/pbatard/rufus/releases/tag/v3.20" >https://github.com/pbatard/rufus/releases/tag/v3.20 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_10-47-56.43r8lqttadq0.webp"
-                      alt="Snipaste_2022-11-10_10-47-56" 
-                ><figcaption>Snipaste_2022-11-10_10-47-56</figcaption></figure>
-
-<p>同时linux版本上我们选择kali，当然不同的linux版本的流程基本一致，安装ubuntu等也是一样的流程</p>
-<p>kali下载地址：<a class="link"   href="https://www.kali.org/get-kali/#kali-installer-images" >https://www.kali.org/get-kali/#kali-installer-images <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>  </p>
-<p>务必注意一下安装平台，我的目标是安装在64位实体机器上的linux系统<br><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_13-28-10.6en6v2vu5rk0.webp"
-                      alt="Snipaste_2022-11-10_13-28-10" 
-                ><figcaption>Snipaste_2022-11-10_13-28-10</figcaption></figure></p>
-<p>至于installer和Netinstall的区别，一个是镜像文件里包含一定量的系统文件和工具，另一个是啥都没有，需要联网安装，至于weekly，那就是刚刚更新的版本，everything就是全部的工具都有。<br><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_13-28-45-1668067257514.3yt48fjz8we0.webp"
-                      alt="Snipaste_2022-11-10_13-28-45-1668067257514" 
-                ><figcaption>Snipaste_2022-11-10_13-28-45-1668067257514</figcaption></figure></p>
-<h1 id="刷镜像"><a href="#刷镜像" class="headerlink" title="刷镜像"></a>刷镜像</h1><p>启动rufus，插入U盘，选择镜像，要注意的是，要将一整个U盘都作为使用空间去刷。<br>其余的设置照我这张图来的就行。<br><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_13-29-42.1jo5i61xa9sw.webp"
-                      alt="Snipaste_2022-11-10_13-29-42" 
-                ><figcaption>Snipaste_2022-11-10_13-29-42</figcaption></figure><br>接下来要注意的是以什么镜像模式写入，虽然这里建议的是使用ISO模式，但在kali安装的过程中很容易出现找不到介质的问题，故使用DD模式。  </p>
-<figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_13-30-03.45p5cdsspy40.webp"
-                      alt="Snipaste_2022-11-10_13-30-03" 
-                ><figcaption>Snipaste_2022-11-10_13-30-03</figcaption></figure>
-
-<p>接下来等镜像刷好，直接重启</p>
-<h1 id="改Bios"><a href="#改Bios" class="headerlink" title="改Bios"></a>改Bios</h1><p>电脑重启后，进入bios，需要改几个设置，security中的secure boot，改成我这个样子<br><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_16-17-17.13o4zh26iwyk.webp"
-                      alt="Snipaste_2022-11-10_16-17-17" 
-                ><figcaption>Snipaste_2022-11-10_16-17-17</figcaption></figure></p>
-<figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_16-17-31.6nzjkm8p3hs0.webp"
-                      alt="Snipaste_2022-11-10_16-17-31" 
-                ><figcaption>Snipaste_2022-11-10_16-17-31</figcaption></figure>
-然后是startup中，允许legacy boot启动，具体按我这个来就可以，要注意的是，这种启动方式会导致，  
-以后只要接入kali系统盘的情况下，直接使用kali的引导进入系统。  
-且windows系统进入会略慢。
-
-<figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_16-17-41.2opi8uhza9k0.webp"
-                      alt="Snipaste_2022-11-10_16-17-41" 
-                ><figcaption>Snipaste_2022-11-10_16-17-41</figcaption></figure>
-启动顺序，我这里无脑将USB启动的都放在了前面。  
-<figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_16-17-02.23snfrepzejk.webp"
-                      alt="Snipaste_2022-11-10_16-17-02" 
-                ><figcaption>Snipaste_2022-11-10_16-17-02</figcaption></figure>
-保存并退出，引导至kali启动盘界面
-<figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_16-16-38.6fmfv86has00.webp"
-                      alt="Snipaste_2022-11-10_16-16-38" 
-                ><figcaption>Snipaste_2022-11-10_16-16-38</figcaption></figure>
-
-<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>之后的安装流程与虚拟机的安装基本大同小异，故后面的截图都用的虚拟机作为演示<br>同时我仅将需要注意的部分截图。<br><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_14-18-50.2hgrvafomha0.webp"
-                      alt="Snipaste_2022-11-10_14-18-50" 
-                ><figcaption>Snipaste_2022-11-10_14-18-50</figcaption></figure><br>就是这里，如果安装介质的探测失败，就需要回到刷镜像的流程，使用另一种模式重新刷<br><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_14-19-31.31d01p49h9u0.webp"
-                      alt="Snipaste_2022-11-10_14-19-31" 
-                ><figcaption>Snipaste_2022-11-10_14-19-31</figcaption></figure><br>之后这里的对磁盘进行分区，使用向导对整个硬盘配置LVM，或者加密LVM，当然也可以手动分配，这样的目的是给之后的GRUB预留空间。</p>
-<p>这里要注意的是，不要用掉全部的空间，如果你使用的硬盘是100G，就一定要留出至少1个G出来，<br>比如这个硬盘是321G（这是在虚拟机里识别出来的虚拟硬盘大小），我就大约会流出21G空闲。<br><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-21-20.png"
-                      alt="Snipaste_2022-11-10_14-21-20"
-                ><figcaption>Snipaste_2022-11-10_14-21-20</figcaption></figure></p>
-<p>建议将各个部分都分区，而不是都放在同一个分区里。</p>
-<p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-22-49.png"
-                      alt="Snipaste_2022-11-10_14-22-49"
-                ><figcaption>Snipaste_2022-11-10_14-22-49</figcaption></figure></p>
-<p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-22-35.png"
-                      alt="Snipaste_2022-11-10_14-22-35"
-                ><figcaption>Snipaste_2022-11-10_14-22-35</figcaption></figure></p>
-<p>假如没有分配空闲出来，安装后的效果就会是左上角一直闪烁光标的黑屏，无限黑屏下去。<br>原因是：后面安装GRUB给覆盖了。</p>
-<p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_15-12-49.png"
-                      alt="Snipaste_2022-11-10_15-12-49"
-                ><figcaption>Snipaste_2022-11-10_15-12-49</figcaption></figure></p>
-<p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-23-27.png"
-                      alt="Snipaste_2022-11-10_14-23-27"
-                ><figcaption>Snipaste_2022-11-10_14-23-27</figcaption></figure></p>
-<p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-23-40.png"
-                      alt="Snipaste_2022-11-10_14-23-40"
-                ><figcaption>Snipaste_2022-11-10_14-23-40</figcaption></figure></p>
-<p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-26-16.png"
-                      alt="Snipaste_2022-11-10_14-26-16"
-                ><figcaption>Snipaste_2022-11-10_14-26-16</figcaption></figure></p>
-<p>如果是在已经装了win的电脑上安装kali，这一页会说，这台计算机里还有个windows，要不要把GRUB安装在windows那个驱动器上</p>
-<p>我的回答是，否</p>
-<p>一定是把GRUB装在我刚刚留出来的空间的，不然以windows动不动就更新的尿性，GRUB会懵比。</p>
-<p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-45-12.png"
-                      alt="Snipaste_2022-11-10_14-45-12"
-                ><figcaption>Snipaste_2022-11-10_14-45-12</figcaption></figure></p>
-<p>选择你买的那个移动硬盘。会自动安装在硬盘分区。</p>
-<p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-45-27.png"
-                      alt="Snipaste_2022-11-10_14-45-27"
-                ><figcaption>Snipaste_2022-11-10_14-45-27</figcaption></figure></p>
-<p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-45-41.png"
-                      alt="Snipaste_2022-11-10_14-45-41"
-                ><figcaption>Snipaste_2022-11-10_14-45-41</figcaption></figure></p>
-<p><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_15-12-12.png"
-                      alt="Snipaste_2022-11-10_15-12-12"
-                ><figcaption>Snipaste_2022-11-10_15-12-12</figcaption></figure></p>
-<p>安装结束，拔下U盘，留下硬盘，直接重新启动，静静等待kali启动的过程。</p>
-<h1 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h1><p>效果就是，我整篇流程都是在这个kali上写下的，很舒服<br><figure class="image-caption"><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Screenshot_2022-11-10_21_17_08-1668086282838.6ovjlov1dco0.webp"
-                      alt="Screenshot_2022-11-10_21_17_08-1668086282838" 
-                ><figcaption>Screenshot_2022-11-10_21_17_08-1668086282838</figcaption></figure></p>
-]]></content>
-  </entry>
-  <entry>
     <title>不过是SSRF 为什么面试官老问这个？</title>
     <url>/2023/07/19/%E4%B8%8D%E8%BF%87%E6%98%AFSSRF-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9D%A2%E8%AF%95%E5%AE%98%E8%80%81%E9%97%AE%E8%BF%99%E4%B8%AA%EF%BC%9F/</url>
     <content><![CDATA[<blockquote>
@@ -833,6 +643,196 @@
 ]]></content>
   </entry>
   <entry>
+    <title>关于Win+Linux双系统 我实现了一个解决方案</title>
+    <url>/2023/04/23/%E5%85%B3%E4%BA%8EWin-Linux%E5%8F%8C%E7%B3%BB%E7%BB%9F-%E6%88%91%E5%AE%9E%E7%8E%B0%E4%BA%86%E4%B8%80%E4%B8%AA%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</url>
+    <content><![CDATA[<blockquote>
+<p>前情提要：<br><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/image 1.dc4kno2gir4.webp"
+                      alt="image 1" 
+                ><figcaption>image 1</figcaption></figure></p>
+</blockquote>
+<blockquote>
+<p>之前完成了便携的kali系统，即，将kali安装在移动硬盘中，想要使用的话，只需要插上后重启即可。<br>某一天发现启动出问题了，故该文章重新编写，把截图全都补上。</p>
+</blockquote>
+<p>那么，正文开始</p>
+<h1 id="买"><a href="#买" class="headerlink" title="买"></a>买</h1><p>这里我们期待的一个环境，就是将linux系统安装在移动硬盘里，做到即插即用。<br>先买一个差不多大的硬盘，这里建议买带硬盘盒的，窄长一小条，方便携带。</p>
+<figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/image-1668069178564.hjd8m970em0.webp"
+                      alt="image-1668069178564" 
+                ><figcaption>image-1668069178564</figcaption></figure>
+
+<p>之后选一个差不多的U盘作为安装启动盘，这里用不着买太大的，差不多就行。</p>
+<h1 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h1><p>我们需要一个能将镜像文件存放的安装介质，即把iso放进u盘的工具</p>
+<p>Rufus:<a class="link"   href="https://github.com/pbatard/rufus/releases/tag/v3.20" >https://github.com/pbatard/rufus/releases/tag/v3.20 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_10-47-56.43r8lqttadq0.webp"
+                      alt="Snipaste_2022-11-10_10-47-56" 
+                ><figcaption>Snipaste_2022-11-10_10-47-56</figcaption></figure>
+
+<p>同时linux版本上我们选择kali，当然不同的linux版本的流程基本一致，安装ubuntu等也是一样的流程</p>
+<p>kali下载地址：<a class="link"   href="https://www.kali.org/get-kali/#kali-installer-images" >https://www.kali.org/get-kali/#kali-installer-images <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>  </p>
+<p>务必注意一下安装平台，我的目标是安装在64位实体机器上的linux系统<br><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_13-28-10.6en6v2vu5rk0.webp"
+                      alt="Snipaste_2022-11-10_13-28-10" 
+                ><figcaption>Snipaste_2022-11-10_13-28-10</figcaption></figure></p>
+<p>至于installer和Netinstall的区别，一个是镜像文件里包含一定量的系统文件和工具，另一个是啥都没有，需要联网安装，至于weekly，那就是刚刚更新的版本，everything就是全部的工具都有。<br><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_13-28-45-1668067257514.3yt48fjz8we0.webp"
+                      alt="Snipaste_2022-11-10_13-28-45-1668067257514" 
+                ><figcaption>Snipaste_2022-11-10_13-28-45-1668067257514</figcaption></figure></p>
+<h1 id="刷镜像"><a href="#刷镜像" class="headerlink" title="刷镜像"></a>刷镜像</h1><p>启动rufus，插入U盘，选择镜像，要注意的是，要将一整个U盘都作为使用空间去刷。<br>其余的设置照我这张图来的就行。<br><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_13-29-42.1jo5i61xa9sw.webp"
+                      alt="Snipaste_2022-11-10_13-29-42" 
+                ><figcaption>Snipaste_2022-11-10_13-29-42</figcaption></figure><br>接下来要注意的是以什么镜像模式写入，虽然这里建议的是使用ISO模式，但在kali安装的过程中很容易出现找不到介质的问题，故使用DD模式。  </p>
+<figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_13-30-03.45p5cdsspy40.webp"
+                      alt="Snipaste_2022-11-10_13-30-03" 
+                ><figcaption>Snipaste_2022-11-10_13-30-03</figcaption></figure>
+
+<p>接下来等镜像刷好，直接重启</p>
+<h1 id="改Bios"><a href="#改Bios" class="headerlink" title="改Bios"></a>改Bios</h1><p>电脑重启后，进入bios，需要改几个设置，security中的secure boot，改成我这个样子<br><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_16-17-17.13o4zh26iwyk.webp"
+                      alt="Snipaste_2022-11-10_16-17-17" 
+                ><figcaption>Snipaste_2022-11-10_16-17-17</figcaption></figure></p>
+<figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_16-17-31.6nzjkm8p3hs0.webp"
+                      alt="Snipaste_2022-11-10_16-17-31" 
+                ><figcaption>Snipaste_2022-11-10_16-17-31</figcaption></figure>
+然后是startup中，允许legacy boot启动，具体按我这个来就可以，要注意的是，这种启动方式会导致，  
+以后只要接入kali系统盘的情况下，直接使用kali的引导进入系统。  
+且windows系统进入会略慢。
+
+<figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_16-17-41.2opi8uhza9k0.webp"
+                      alt="Snipaste_2022-11-10_16-17-41" 
+                ><figcaption>Snipaste_2022-11-10_16-17-41</figcaption></figure>
+启动顺序，我这里无脑将USB启动的都放在了前面。  
+<figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_16-17-02.23snfrepzejk.webp"
+                      alt="Snipaste_2022-11-10_16-17-02" 
+                ><figcaption>Snipaste_2022-11-10_16-17-02</figcaption></figure>
+保存并退出，引导至kali启动盘界面
+<figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_16-16-38.6fmfv86has00.webp"
+                      alt="Snipaste_2022-11-10_16-16-38" 
+                ><figcaption>Snipaste_2022-11-10_16-16-38</figcaption></figure>
+
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>之后的安装流程与虚拟机的安装基本大同小异，故后面的截图都用的虚拟机作为演示<br>同时我仅将需要注意的部分截图。<br><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_14-18-50.2hgrvafomha0.webp"
+                      alt="Snipaste_2022-11-10_14-18-50" 
+                ><figcaption>Snipaste_2022-11-10_14-18-50</figcaption></figure><br>就是这里，如果安装介质的探测失败，就需要回到刷镜像的流程，使用另一种模式重新刷<br><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Snipaste_2022-11-10_14-19-31.31d01p49h9u0.webp"
+                      alt="Snipaste_2022-11-10_14-19-31" 
+                ><figcaption>Snipaste_2022-11-10_14-19-31</figcaption></figure><br>之后这里的对磁盘进行分区，使用向导对整个硬盘配置LVM，或者加密LVM，当然也可以手动分配，这样的目的是给之后的GRUB预留空间。</p>
+<p>这里要注意的是，不要用掉全部的空间，如果你使用的硬盘是100G，就一定要留出至少1个G出来，<br>比如这个硬盘是321G（这是在虚拟机里识别出来的虚拟硬盘大小），我就大约会流出21G空闲。<br><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-21-20.png"
+                      alt="Snipaste_2022-11-10_14-21-20"
+                ><figcaption>Snipaste_2022-11-10_14-21-20</figcaption></figure></p>
+<p>建议将各个部分都分区，而不是都放在同一个分区里。</p>
+<p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-22-49.png"
+                      alt="Snipaste_2022-11-10_14-22-49"
+                ><figcaption>Snipaste_2022-11-10_14-22-49</figcaption></figure></p>
+<p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-22-35.png"
+                      alt="Snipaste_2022-11-10_14-22-35"
+                ><figcaption>Snipaste_2022-11-10_14-22-35</figcaption></figure></p>
+<p>假如没有分配空闲出来，安装后的效果就会是左上角一直闪烁光标的黑屏，无限黑屏下去。<br>原因是：后面安装GRUB给覆盖了。</p>
+<p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_15-12-49.png"
+                      alt="Snipaste_2022-11-10_15-12-49"
+                ><figcaption>Snipaste_2022-11-10_15-12-49</figcaption></figure></p>
+<p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-23-27.png"
+                      alt="Snipaste_2022-11-10_14-23-27"
+                ><figcaption>Snipaste_2022-11-10_14-23-27</figcaption></figure></p>
+<p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-23-40.png"
+                      alt="Snipaste_2022-11-10_14-23-40"
+                ><figcaption>Snipaste_2022-11-10_14-23-40</figcaption></figure></p>
+<p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-26-16.png"
+                      alt="Snipaste_2022-11-10_14-26-16"
+                ><figcaption>Snipaste_2022-11-10_14-26-16</figcaption></figure></p>
+<p>如果是在已经装了win的电脑上安装kali，这一页会说，这台计算机里还有个windows，要不要把GRUB安装在windows那个驱动器上</p>
+<p>我的回答是，否</p>
+<p>一定是把GRUB装在我刚刚留出来的空间的，不然以windows动不动就更新的尿性，GRUB会懵比。</p>
+<p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-45-12.png"
+                      alt="Snipaste_2022-11-10_14-45-12"
+                ><figcaption>Snipaste_2022-11-10_14-45-12</figcaption></figure></p>
+<p>选择你买的那个移动硬盘。会自动安装在硬盘分区。</p>
+<p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-45-27.png"
+                      alt="Snipaste_2022-11-10_14-45-27"
+                ><figcaption>Snipaste_2022-11-10_14-45-27</figcaption></figure></p>
+<p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_14-45-41.png"
+                      alt="Snipaste_2022-11-10_14-45-41"
+                ><figcaption>Snipaste_2022-11-10_14-45-41</figcaption></figure></p>
+<p><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://fiddling.blog/upload/2022/11/Snipaste_2022-11-10_15-12-12.png"
+                      alt="Snipaste_2022-11-10_15-12-12"
+                ><figcaption>Snipaste_2022-11-10_15-12-12</figcaption></figure></p>
+<p>安装结束，拔下U盘，留下硬盘，直接重新启动，静静等待kali启动的过程。</p>
+<h1 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h1><p>效果就是，我整篇流程都是在这个kali上写下的，很舒服<br><figure class="image-caption"><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://github.com/BrathonBai/ImgHS/raw/main/content/win_lin/Screenshot_2022-11-10_21_17_08-1668086282838.6ovjlov1dco0.webp"
+                      alt="Screenshot_2022-11-10_21_17_08-1668086282838" 
+                ><figcaption>Screenshot_2022-11-10_21_17_08-1668086282838</figcaption></figure></p>
+]]></content>
+  </entry>
+  <entry>
     <title>关于社会工程学的一些个人看法</title>
     <url>/2023/04/23/%E5%85%B3%E4%BA%8E%E7%A4%BE%E4%BC%9A%E5%B7%A5%E7%A8%8B%E5%AD%A6%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E7%9C%8B%E6%B3%95/</url>
     <content><![CDATA[<p>从何讲起呢？<br>本人从上学时了解到社会工程学这门黑客学科<br>社会工程学是指，利用人性的弱点和特性，直接对目标相关的人进行社会关系和心理学的信息套取的手段。<br>主要行动方向有两条，一方面是从目标人物已经完成的社会行为中搜索关键信息，比如，找到目标人物的网络社交账号与发表的信息等。<br>另一方面是直接接触目标人物，通过语言或肢体交流进行信息套取，这里从广泛的意义上讲，电信诈骗也是应用案例之一。</p>
@@ -901,6 +901,61 @@
 <p>参考：</p>
 </blockquote>
 <p><a class="link"   href="https://baike.baidu.com/item/%E6%99%BA%E8%83%BD%E5%AE%B6%E5%B1%85/686345?fr=aladdin" >https://baike.baidu.com/item/%E6%99%BA%E8%83%BD%E5%AE%B6%E5%B1%85/686345?fr=aladdin <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>破解，再给新下载的burp加个快捷方式</title>
+    <url>/2023/04/23/%E7%A0%B4%E8%A7%A3%EF%BC%8C%E5%86%8D%E7%BB%99%E6%96%B0%E4%B8%8B%E8%BD%BD%E7%9A%84burp%E5%8A%A0%E4%B8%AA%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F/</url>
+    <content><![CDATA[<blockquote>
+<p>拜托，有个双击就可以打开的burp真的很酷好吗？</p>
+</blockquote>
+<p>咱就是说，在kali和mac上使用burp有那么些不自然</p>
+<h2 id="破解"><a href="#破解" class="headerlink" title="破解"></a>破解</h2><p>通常呢，咱们都是在52破解下载最新版的burpsuite<br><a class="link"   href="https://down.52pojie.cn/Tools/Network_Analyzer/Burp_Suite_Pro_v2022.2.2_Loader_Keygen.zip" >https://down.52pojie.cn/Tools/Network_Analyzer&#x2F;Burp_Suite_Pro_v2022.2.2_Loader_Keygen.zip <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>但52破解的破解器总是用的1.7版本，有些功能真的跟不上</p>
+<p>所以，咱们直接从官方下载正式版的pro<br>然后去全球最大的同性交友网站找到最新的keygen<br>之后怎么做不用我介绍了吧<br>之后的破解流程就没啥好说的了，破解器作者已经表述得很详尽了</p>
+<p>下载链接留这里<br>burpsuite pro：<a class="link"   href="https://portswigger.net/burp/pro" >https://portswigger.net/burp/pro <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>Keygen：<a class="link"   href="https://github.com/h3110w0r1d-y/BurpLoaderKeygen/releases" >https://github.com/h3110w0r1d-y/BurpLoaderKeygen/releases <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="制作快捷方式"><a href="#制作快捷方式" class="headerlink" title="制作快捷方式"></a>制作快捷方式</h2><p>把文件移动到&#x2F;usr&#x2F;bin目录中</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mv</span> BurpLoaderKeygen.jar burpsuite_pro_v2022.2.2.jar /usr/bin</span><br></pre></td></tr></table></figure></div>
+
+<p>先删掉免费的社区版本</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">apt remove burpsuite</span><br></pre></td></tr></table></figure></div>
+
+<p>配置快捷方式:<br>在&#x2F;usr&#x2F;bin下创建burpsuite</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">vim burpsuite</span><br></pre></td></tr></table></figure></div>
+
+<p>将keygen上的loader commond复制粘贴</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">/usr/lib/jvm/java-17-openjdk-amd64/bin/java --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -javaagent:/usr/bin/BurpLoaderKeygen.jar -noverify -jar /usr/bin/burpsuite_pro_v2022.2.2.jar</span><br></pre></td></tr></table></figure></div>
+
+<p>增加执行权限,进入&#x2F;usr&#x2F;share&#x2F;applications，创建并编辑burpsuite的快捷方式</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">chmod</span> +x burpsuite</span><br><span class="line"><span class="built_in">cd</span> /usr/share/applications/</span><br><span class="line">vim burpsuite.desktop</span><br></pre></td></tr></table></figure></div>
+
+<p>填入代码</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">[Desktop Entry]</span><br><span class="line">Name=burpsuite</span><br><span class="line">Encoding=UTF-8</span><br><span class="line">Exec=sh -c <span class="string">&quot;/usr/bin/burpsuite&quot;</span></span><br><span class="line">Icon=kali-burpsuite</span><br><span class="line">StartupNotify=<span class="literal">false</span></span><br><span class="line">Terminal=<span class="literal">false</span></span><br><span class="line">Type=Application</span><br><span class="line">Categories=03-webapp-analysisc;03-06-web-application-proxies;</span><br><span class="line">X-Kali-Package=burpsuite</span><br></pre></td></tr></table></figure></div>
+
+<p>ok</p>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>2022.9版本的破解有些改变，根据沈沉舟大佬的描述：</p>
+<blockquote>
+<p>“2022.9版注册机制并未发生变化，仅仅是相关代码具体实现做了微调，导致class的字节码发生变化，而旧版loader模式匹配时约束条件太强，兼容性不足。”</p>
+</blockquote>
+<p>故新版本的破解流程稍有更改</p>
+<p>首先把需要的部分下载一下，我用的是mac，理论上比linux和win那边麻烦点（实际操作的时候也是很麻烦）  </p>
+<p>安装好app后，右键查看包内容，把loader和keygen移动到app路径下，主要是放在burpsuite旁边  </p>
+<p>由于这个loader名字太难打，咱直接改名burploader<br>右键打开terminal，命令启动burpsuite和keygen</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">java -jar BurpLoaderKeygen.jar</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">java -javaagent:burploader.jar -noverify -jar burpsuite_pro.jar</span><br></pre></td></tr></table></figure></div>
+
+<p>后面注册的过程都是一样的，咱直接跳到关键过程<br>注册成功后从启动台打开还是app还是没注册的样子  </p>
+<p>咱还是进入包内容，添加点内容</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">-javaagent:burploader.jar</span><br><span class="line">-noverify</span><br></pre></td></tr></table></figure></div>
+
+<p>之后就可以正常打开了</p>
+<p>P.S.<br>关于mac更新时遇到的那些操作<br>安装新版本前务必删除全部相关文件  </p>
+<p>苹果的安全机制，修改包内容后会遇到文件损坏的报错<br>这个时候直接</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">sudo spctl --master-disable</span><br></pre></td></tr></table></figure></div>
+
+
+<p>就完事了  </p>
 ]]></content>
   </entry>
   <entry>
@@ -1151,61 +1206,6 @@ FireFox不需要扩展，直接配置就比上面那些搞扩展的好使。</li
 <blockquote>
 <p>参考：<br><a class="link"   href="https://mp.weixin.qq.com/s/A5dd7WXojGBzsz52_iLtJQ" >https://mp.weixin.qq.com/s/A5dd7WXojGBzsz52_iLtJQ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><a class="link"   href="https://cloud.tencent.com/developer/article/1857034" >https://cloud.tencent.com/developer/article/1857034 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><a class="link"   href="https://cloud.tencent.com/document/product/583/9694" >https://cloud.tencent.com/document/product/583/9694 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><a class="link"   href="https://www.cnblogs.com/supdon/p/15099742.html" >https://www.cnblogs.com/supdon/p/15099742.html <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><a class="link"   href="https://github.com/shimmeris/SCFProxy/blob/main/README_zh.md" >https://github.com/shimmeris/SCFProxy/blob/main/README_zh.md <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br><a class="link"   href="https://qust.me/post/m[sm8916](https://acg.tv/sm8916)/" >https://qust.me/post/m[sm8916](https://acg.tv/sm8916)/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 </blockquote>
-]]></content>
-  </entry>
-  <entry>
-    <title>破解，再给新下载的burp加个快捷方式</title>
-    <url>/2023/04/23/%E7%A0%B4%E8%A7%A3%EF%BC%8C%E5%86%8D%E7%BB%99%E6%96%B0%E4%B8%8B%E8%BD%BD%E7%9A%84burp%E5%8A%A0%E4%B8%AA%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F/</url>
-    <content><![CDATA[<blockquote>
-<p>拜托，有个双击就可以打开的burp真的很酷好吗？</p>
-</blockquote>
-<p>咱就是说，在kali和mac上使用burp有那么些不自然</p>
-<h2 id="破解"><a href="#破解" class="headerlink" title="破解"></a>破解</h2><p>通常呢，咱们都是在52破解下载最新版的burpsuite<br><a class="link"   href="https://down.52pojie.cn/Tools/Network_Analyzer/Burp_Suite_Pro_v2022.2.2_Loader_Keygen.zip" >https://down.52pojie.cn/Tools/Network_Analyzer&#x2F;Burp_Suite_Pro_v2022.2.2_Loader_Keygen.zip <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<p>但52破解的破解器总是用的1.7版本，有些功能真的跟不上</p>
-<p>所以，咱们直接从官方下载正式版的pro<br>然后去全球最大的同性交友网站找到最新的keygen<br>之后怎么做不用我介绍了吧<br>之后的破解流程就没啥好说的了，破解器作者已经表述得很详尽了</p>
-<p>下载链接留这里<br>burpsuite pro：<a class="link"   href="https://portswigger.net/burp/pro" >https://portswigger.net/burp/pro <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>Keygen：<a class="link"   href="https://github.com/h3110w0r1d-y/BurpLoaderKeygen/releases" >https://github.com/h3110w0r1d-y/BurpLoaderKeygen/releases <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<h2 id="制作快捷方式"><a href="#制作快捷方式" class="headerlink" title="制作快捷方式"></a>制作快捷方式</h2><p>把文件移动到&#x2F;usr&#x2F;bin目录中</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mv</span> BurpLoaderKeygen.jar burpsuite_pro_v2022.2.2.jar /usr/bin</span><br></pre></td></tr></table></figure></div>
-
-<p>先删掉免费的社区版本</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">apt remove burpsuite</span><br></pre></td></tr></table></figure></div>
-
-<p>配置快捷方式:<br>在&#x2F;usr&#x2F;bin下创建burpsuite</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">vim burpsuite</span><br></pre></td></tr></table></figure></div>
-
-<p>将keygen上的loader commond复制粘贴</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">/usr/lib/jvm/java-17-openjdk-amd64/bin/java --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -javaagent:/usr/bin/BurpLoaderKeygen.jar -noverify -jar /usr/bin/burpsuite_pro_v2022.2.2.jar</span><br></pre></td></tr></table></figure></div>
-
-<p>增加执行权限,进入&#x2F;usr&#x2F;share&#x2F;applications，创建并编辑burpsuite的快捷方式</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">chmod</span> +x burpsuite</span><br><span class="line"><span class="built_in">cd</span> /usr/share/applications/</span><br><span class="line">vim burpsuite.desktop</span><br></pre></td></tr></table></figure></div>
-
-<p>填入代码</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">[Desktop Entry]</span><br><span class="line">Name=burpsuite</span><br><span class="line">Encoding=UTF-8</span><br><span class="line">Exec=sh -c <span class="string">&quot;/usr/bin/burpsuite&quot;</span></span><br><span class="line">Icon=kali-burpsuite</span><br><span class="line">StartupNotify=<span class="literal">false</span></span><br><span class="line">Terminal=<span class="literal">false</span></span><br><span class="line">Type=Application</span><br><span class="line">Categories=03-webapp-analysisc;03-06-web-application-proxies;</span><br><span class="line">X-Kali-Package=burpsuite</span><br></pre></td></tr></table></figure></div>
-
-<p>ok</p>
-<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>2022.9版本的破解有些改变，根据沈沉舟大佬的描述：</p>
-<blockquote>
-<p>“2022.9版注册机制并未发生变化，仅仅是相关代码具体实现做了微调，导致class的字节码发生变化，而旧版loader模式匹配时约束条件太强，兼容性不足。”</p>
-</blockquote>
-<p>故新版本的破解流程稍有更改</p>
-<p>首先把需要的部分下载一下，我用的是mac，理论上比linux和win那边麻烦点（实际操作的时候也是很麻烦）  </p>
-<p>安装好app后，右键查看包内容，把loader和keygen移动到app路径下，主要是放在burpsuite旁边  </p>
-<p>由于这个loader名字太难打，咱直接改名burploader<br>右键打开terminal，命令启动burpsuite和keygen</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">java -jar BurpLoaderKeygen.jar</span><br></pre></td></tr></table></figure></div>
-
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">java -javaagent:burploader.jar -noverify -jar burpsuite_pro.jar</span><br></pre></td></tr></table></figure></div>
-
-<p>后面注册的过程都是一样的，咱直接跳到关键过程<br>注册成功后从启动台打开还是app还是没注册的样子  </p>
-<p>咱还是进入包内容，添加点内容</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">-javaagent:burploader.jar</span><br><span class="line">-noverify</span><br></pre></td></tr></table></figure></div>
-
-<p>之后就可以正常打开了</p>
-<p>P.S.<br>关于mac更新时遇到的那些操作<br>安装新版本前务必删除全部相关文件  </p>
-<p>苹果的安全机制，修改包内容后会遇到文件损坏的报错<br>这个时候直接</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">sudo spctl --master-disable</span><br></pre></td></tr></table></figure></div>
-
-
-<p>就完事了  </p>
 ]]></content>
   </entry>
   <entry>
