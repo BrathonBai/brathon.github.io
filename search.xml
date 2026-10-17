@@ -1256,4 +1256,120 @@ FireFox不需要扩展，直接配置就比上面那些搞扩展的好使。</li
 <p>越狱工具-》适用于不同版本手机和ios版本</p>
 ]]></content>
   </entry>
+  <entry>
+    <title>AG的野心 给每个Agent发一张身份证</title>
+    <url>/2026/10/17/AG%E7%9A%84%E9%87%8E%E5%BF%83-%E7%BB%99%E6%AF%8F%E4%B8%AAAgent%E5%8F%91%E4%B8%80%E5%BC%A0%E8%BA%AB%E4%BB%BD%E8%AF%81/</url>
+    <content><![CDATA[<blockquote>
+<p>这个项目四个月没更新了。不是没想法，是不敢动——因为越写越发现，地基是歪的。</p>
+</blockquote>
+<h2 id="一、先承认一件事"><a href="#一、先承认一件事" class="headerlink" title="一、先承认一件事"></a>一、先承认一件事</h2><p>四个月前我写完 Adventurers Guild 的 v1：一个 WebSocket 运行时，成员可以注册，agent 可以加入，可以发布任务、组队、互相发消息。看起来挺完整。</p>
+<p>然后我就停在那儿了。</p>
+<p>停下来的原因很具体：我试着给它加”签名验证”，写着写着发现——<strong>我正在用协会发给 agent 的密码，去验证 agent 自己签的名</strong>。</p>
+<p>也就是说，签名这件事，在那个设计里是假的。协会持有所有密钥，它可以冒充任何一个 agent；而 A2A 消息上的那个 HMAC，只证明”你知道协会发给你的那串字符”。</p>
+<p>这不是一个 bug，是一个<strong>结构性错误</strong>。而在它上面继续盖楼，只会盖得更高、塌得更响。</p>
+<h2 id="二、三个结构性缺陷"><a href="#二、三个结构性缺陷" class="headerlink" title="二、三个结构性缺陷"></a>二、三个结构性缺陷</h2><p>把当时的设计摊开看，问题不止一个：</p>
+<p><strong>1. 身份是租来的，不是自己的。</strong><br><code>did:guild:agent:orion</code> 这个 DID 由协会生成，密钥由协会签发。DID 文档里那个”公钥”字段，当时写的是一个占位符字符串：<code>placeholder-public-key-until-agent-key-binding-is-enabled</code>。</p>
+<p>一个公开宣称”可验证”的身份系统，里面放着一个占位符。这个细节很说明问题。</p>
+<p><strong>2. 授权是宣称，不是证明。</strong><br>“这个 agent 可以代表这个会员发布任务”——这句话存在协会的数据库里。协会说有就有。想让别人（另一个协会、另一个 agent）验证这句话，得先信任这个协会的数据库。</p>
+<p>跨组织协作在这里直接死掉。</p>
+<p><strong>3. 协议是自己发明的。</strong><br><code>guild-a2a</code> v1 信封，字段是我拍脑袋定的。外面那些用 A2A 协议、ACP 协议、MCP 的 agent，一个都接不进来。</p>
+<p>这三条加起来，结论很难听：<strong>当时做的不是”多智能体协作系统”，是”一个有账号系统的聊天室”。</strong></p>
+<h2 id="三、推翻重做，只留三个决定"><a href="#三、推翻重做，只留三个决定" class="headerlink" title="三、推翻重做，只留三个决定"></a>三、推翻重做，只留三个决定</h2><p>这次重做，我把所有”以后再说”的选项都砍掉了，只留三条硬决定。</p>
+<h3 id="决定一：只保留-did-web，砍掉自造的-DID-方法"><a href="#决定一：只保留-did-web，砍掉自造的-DID-方法" class="headerlink" title="决定一：只保留 did:web，砍掉自造的 DID 方法"></a>决定一：只保留 <code>did:web</code>，砍掉自造的 DID 方法</h3><p>原来我设计了两套：<code>did:guild</code>（协会发的）和 <code>did:web</code>（自己托管的）。</p>
+<p>双轨是个陷阱。两套身份意味着两套信任根、两套解析器、两套撤销逻辑，以及一个永远说不清的过渡期。</p>
+<p>现在只留 <code>did:web</code>。入会的时候，协会给你分配一个子域：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">did:web:guild.example.com:alice</span><br><span class="line">  → https://guild.example.com/alice/did.json</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>域名就是身份证号。</strong> 它唯一、可解析、可验证，而且不依赖任何私有格式。</p>
+<p>代价要说清楚：域和文件是协会托管的，所以这<strong>不是</strong>“自主主权身份”。准确的说法是——协会不能悄悄改你的身份，改了会被发现。这是 <code>tamper-evident</code>，不是 <code>tamper-proof</code>。</p>
+<p>我宁愿把这句话写进设计文档，也不想对外宣称一个做不到的承诺。</p>
+<h3 id="决定二：授权用-W3C-Verifiable-Credential，不用自签-JWT"><a href="#决定二：授权用-W3C-Verifiable-Credential，不用自签-JWT" class="headerlink" title="决定二：授权用 W3C Verifiable Credential，不用自签 JWT"></a>决定二：授权用 W3C Verifiable Credential，不用自签 JWT</h3><p>会员要授权给 agent，正确的形态是一张<strong>可验证凭证</strong>：</p>
+<div class="highlight-container" data-rel="Json"><figure class="iseeu highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;VerifiableCredential&quot;</span><span class="punctuation">,</span> <span class="string">&quot;GuildDelegationCredential&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;issuer&quot;</span><span class="punctuation">:</span> <span class="string">&quot;did:web:guild.example.com:alice&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;credentialSubject&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;did:web:guild.example.com:orion&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;scopes&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;PUBLISH_QUEST&quot;</span><span class="punctuation">,</span> <span class="string">&quot;COORDINATE_PARTY&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;constraints&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;questId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;quest-42&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;maxUses&quot;</span><span class="punctuation">:</span> <span class="number">10</span> <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;proof&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;cryptosuite&quot;</span><span class="punctuation">:</span> <span class="string">&quot;eddsa-rdfc-2022&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></div>
+
+<p>关键在 <code>issuer</code> 这一行：<strong>发证人是会员，不是协会。</strong></p>
+<p>协会的角色从”发证机关”退成”名册”——它登记、它提供解析、它验证，但它不拥有你的授权能力。</p>
+<p>而 <code>constraints</code> 这一行解决了一个很实际的问题：旧设计里 <code>PUBLISH_QUEST</code> 是全局权限，一个 agent 拿到就能发任何任务。现在可以精确到”只能发 quest-42，最多 10 次”。</p>
+<h3 id="决定三：透明日志，而不是”相信我们不会改”"><a href="#决定三：透明日志，而不是”相信我们不会改”" class="headerlink" title="决定三：透明日志，而不是”相信我们不会改”"></a>决定三：透明日志，而不是”相信我们不会改”</h3><p>身份会被轮换、会被撤销、会被接管。这些变更需要被记录，而且<strong>不能由运营方单方面改写</strong>。</p>
+<p>我选了 RFC 6962 的 Merkle 日志——就是 Certificate Transparency 用的那套：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">leaf  = SHA-256(0x00 || 入口数据)</span><br><span class="line">node  = SHA-256(0x01 || 左子 || 右子)</span><br></pre></td></tr></table></figure></div>
+
+<p>每条身份变更是一条日志记录，<strong>由身份持有者自己签名</strong>。协会负责排序、入树、对外提供 inclusion proof，但它伪造不了一条别人的记录——它没有那个私钥。</p>
+<p>根哈希定期锚定（现在只留接口，还没接链）。</p>
+<h2 id="四、关于区块链：我踩了一脚刹车"><a href="#四、关于区块链：我踩了一脚刹车" class="headerlink" title="四、关于区块链：我踩了一脚刹车"></a>四、关于区块链：我踩了一脚刹车</h2><p>最初的想法很直接：把身份写到链上，唯一且不可篡改，多完美。</p>
+<p>冷静下来算了三笔账：</p>
+<ul>
+<li><strong>钱</strong>：以太坊主网写一次几美元，注册和轮换都要写。</li>
+<li><strong>时间</strong>：入会要等区块确认。</li>
+<li><strong>隐私</strong>：公链上的数据永久公开且删不掉。设备的序列号、位置一旦上链，等于公开了物理坐标。</li>
+</ul>
+<p>更关键的是第三笔账：<strong>如果注册交易也由协会签名，那么协会同时控制域名、文件、链上写入——它想改什么就改什么，链只是换了个存储介质。</strong></p>
+<p>链只有在”有别人能独立验证”时才有效。所以最后定的是：先做透明日志，把锚定接口留出来，等身份格式定型、真有第三方需要独立验证时再接链。</p>
+<p><strong>不为了”用了区块链”而用区块链。</strong></p>
+<h2 id="五、所以野心到底是什么"><a href="#五、所以野心到底是什么" class="headerlink" title="五、所以野心到底是什么"></a>五、所以野心到底是什么</h2><p>如果只是想做一个”让 AI 帮忙接活”的平台，上面这些工程都不必要。找个现成的框架，接个大模型 API，两周就能出 demo。</p>
+<p>我花四个月想清楚的是另一件事：</p>
+<blockquote>
+<p><strong>现在的 Agent 有很强的能力，但没有任何”社会属性”。</strong></p>
+</blockquote>
+<p>它们不知道自己是谁（没有稳定身份），不能证明自己能做什么（能力靠自述），不能被追责（出了问题查不到人），不能被信任（没有历史）。每换一个协作对象，这一切都要从零重建。</p>
+<p>人不是这样的。人有身份证、有履历、有推荐信、有征信记录。这些”社会基础设施”让人可以在陌生人之间协作——<strong>不是因为信任对方，而是因为可以验证。</strong></p>
+<p>AG 想做的，是给 Agent 补上这层基础设施：</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>问题</th>
+<th>我们的答案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>身份</td>
+<td>你是谁</td>
+<td><code>did:web</code> + 你自己的私钥</td>
+</tr>
+<tr>
+<td>授权</td>
+<td>你能替我做什么</td>
+<td>W3C VC，会员签发</td>
+</tr>
+<tr>
+<td>信用</td>
+<td>你过去做得怎么样</td>
+<td>按后端分档的完成记录</td>
+</tr>
+<tr>
+<td>审计</td>
+<td>出了事能不能查</td>
+<td>会员签名的透明日志</td>
+</tr>
+<tr>
+<td>协作</td>
+<td>怎么组队、怎么分工</td>
+<td>A2A + quest&#x2F;party&#x2F;task</td>
+</tr>
+</tbody></table>
+<p><strong>这不是一个 Agent 框架，是 Agent 的社会。</strong></p>
+<p>框架会过时，模型会换代，今天最好的编排库明天就没人用了。但”谁是谁、谁能代表谁、谁做过什么”这些问题会一直在。</p>
+<h2 id="六、现在到哪一步了"><a href="#六、现在到哪一步了" class="headerlink" title="六、现在到哪一步了"></a>六、现在到哪一步了</h2><p>刚才推了第一版代码上 GitHub。诚实地说，只是地基的第一块砖：</p>
+<ul>
+<li>Ed25519 签名核心（JWK 导入导出、RFC 7638 指纹）</li>
+<li>RFC 6962 Merkle 日志（含 inclusion proof 与 RFC 9162 验证）</li>
+<li>身份日志条目（会员签名 + <code>prevEntryHash</code> 链）</li>
+<li>65 条测试全绿，含 RFC 8032 官方测试向量</li>
+</ul>
+<p>那个测试向量让我挺高兴：<strong>我们签出来的字节，和任何标准 Ed25519 实现互通。</strong> 意味着将来跑在 ESP32 上的固件、用 Python 写的验证器、用 Go 写的网关，验的都是同一套东西。</p>
+<p>再往前是：<code>did:web</code> 的发行与解析、<code>guildctl</code> 客户端、A2A 端点、设备双签名。大概还有一个月。</p>
+<h2 id="七、说点实话"><a href="#七、说点实话" class="headerlink" title="七、说点实话"></a>七、说点实话</h2><p>这个项目大概率不会让我发财。多智能体协作的基础设施，标准是大厂在推，生态是开源的，一个独立开发者在这里能占的位置很小。</p>
+<p>但我还是想做。</p>
+<p>因为我觉得有一件事是对的：<strong>当 Agent 开始替人做事，”它是谁”这个问题，迟早要有一个答案。</strong> 而这个答案不该只属于某一家公司。</p>
+<p>如果你也在做类似的事，或者你手里有几个 agent 想让它们互相认一认，欢迎来聊。</p>
+<p>协会现在只有我一个会员。第二个位置空着。</p>
+]]></content>
+      <tags>
+        <tag>多智能体</tag>
+        <tag>A2A</tag>
+        <tag>身份</tag>
+        <tag>DID</tag>
+        <tag>透明日志</tag>
+      </tags>
+  </entry>
 </search>
